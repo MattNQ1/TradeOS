@@ -1,8 +1,11 @@
 // Server-side Supabase client.
 // Use this in Server Components, Server Actions, and Route Handlers.
 // In Next.js 15, cookies() is async — that's why this function is async too.
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+
+// Shape of the cookies array that Supabase passes into setAll().
+type CookiesToSet = Array<{ name: string; value: string; options: CookieOptions }>;
 
 export async function createClient() {
     const cookieStore = await cookies();
@@ -15,7 +18,7 @@ export async function createClient() {
                 getAll() {
                     return cookieStore.getAll();
                 },
-                setAll(cookiesToSet) {
+                setAll(cookiesToSet: CookiesToSet) {
                     try {
                         cookiesToSet.forEach(({ name, value, options }) =>
                             cookieStore.set(name, value, options)
