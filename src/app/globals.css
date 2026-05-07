@@ -1,0 +1,43 @@
+/* ============================================================
+   Global styles — Tailwind v4 + custom theme tokens
+   Tailwind v4 uses CSS-based configuration via @theme {}.
+   ============================================================ */
+@import "tailwindcss";
+
+/* Define our color palette so Tailwind classes like bg-bg, text-accent work. */
+@theme {
+    --color-bg:           #0f172a;   /* slate-900 — page background */
+    --color-bg-elev:      #1e293b;   /* slate-800 — cards */
+    --color-bg-elev-2:    #334155;   /* slate-700 — inputs */
+    --color-border:       #334155;
+    --color-border-soft:  #1e293b;
+    --color-text:         #f1f5f9;   /* slate-100 */
+    --color-text-muted:   #94a3b8;   /* slate-400 */
+    --color-text-subtle:  #64748b;   /* slate-500 */
+    --color-accent:       #10b981;   /* emerald-500 — primary trading color */
+    --color-accent-hover: #059669;
+    --color-loss:         #f43f5e;   /* rose-500 */
+    --color-gain:         #10b981;
+    --color-warn:         #f59e0b;
+
+    --radius-card: 1rem;
+}
+
+/* App defaults: dark trading aesthetic. */
+html, body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+                 Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+/* Hide number-input spinners — cleaner mobile UX */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; }
