@@ -212,10 +212,7 @@ function FilePickerArea({ onPickFile, fileInputRef, onFile }: FilePickerProps) {
 
 function IdleStage({ onPickFile, fileInputRef, onFile }: FilePickerProps) {
     return (
-        <>
-            <FilePickerArea onPickFile={onPickFile} fileInputRef={fileInputRef} onFile={onFile} />
-            <FormatSection />
-        </>
+        <FilePickerArea onPickFile={onPickFile} fileInputRef={fileInputRef} onFile={onFile} />
     );
 }
 
@@ -306,29 +303,6 @@ function ErrorStage({
             </div>
 
             <FilePickerArea onPickFile={onPickFile} fileInputRef={fileInputRef} onFile={onFile} />
-            <FormatSection />
         </>
-    );
-}
-
-function FormatSection() {
-    return (
-        <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
-                Required format
-            </h3>
-            <p className="text-xs text-[var(--color-text-muted)] mb-2">
-                The first row must be a header. <span className="font-semibold text-[var(--color-text)]">Required columns:</span> date, contract, direction, contracts, entry_price, exit_price.
-                <span className="block mt-1"><span className="font-semibold text-[var(--color-text)]">Optional:</span> commission_per_side, planned_risk, notes.</span>
-            </p>
-            <pre className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3 text-[11px] leading-relaxed text-[var(--color-text-muted)] overflow-x-auto font-mono whitespace-pre">
-{`date,contract,direction,contracts,entry_price,exit_price,notes
-2026-05-07,MES,long,2,5012.25,5018.75,trend continuation
-2026-05-07,NQ,short,1,17850,17800,reversal at supply`}
-            </pre>
-            <p className="text-[11px] text-[var(--color-text-subtle)] mt-2">
-                Tip: Export your existing trades first to see the exact column format expected.
-            </p>
-        </div>
     );
 }
