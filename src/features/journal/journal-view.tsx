@@ -52,7 +52,7 @@ export function JournalView({ initialTrades }: JournalViewProps) {
                 </div>
                 <div className="flex items-center gap-1.5 -mt-1">
                     <ToolbarButton
-                        label="Import CSV"
+                        label="Import/Export CSV"
                         icon={<UploadIcon />}
                         onClick={() => setCsvOpen(true)}
                     />
