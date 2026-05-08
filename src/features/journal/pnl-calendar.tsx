@@ -6,12 +6,12 @@ import { Card } from "@/components/ui/card";
 import { fmtUSD, fmtUSD0 } from "@/features/calculator/calc";
 import {
     currentMonthISO,
+    dailyStatsMap,
     formatCompactAmount,
     shiftMonth,
     todayISO,
 } from "./trade-stats";
 import type { Trade } from "./types";
-import { dailyPnLMap } from "./trade-stats";
 
 const MONTH_NAMES = [
     "January", "February", "March", "April", "May", "June",
@@ -25,7 +25,7 @@ interface PnLCalendarProps {
 export function PnLCalendar({ trades }: PnLCalendarProps) {
     const [month, setMonth] = useState<string>(currentMonthISO());
 
-    const dailyPnL = dailyPnLMap(trades);
+    const dailyStats = dailyStatsMap(trades);
     const [yearStr, monthStr] = month.split("-");
     const year = Number(yearStr);
     const monthNum = Number(monthStr); // 1..12
@@ -35,19 +35,20 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
     const daysInMonth = lastDay.getDate();
     const startWeekday = firstDay.getDay(); // 0..6 Sun..Sat
 
-    interface Cell { day: number | null; iso: string | null; pnl: number; }
+    interface Cell { day: number | null; iso: string | null; pnl: number; count: number; }
     const cells: Cell[] = [];
-    for (let i = 0; i < startWeekday; i++) cells.push({ day: null, iso: null, pnl: 0 });
+    for (let i = 0; i < startWeekday; i++) cells.push({ day: null, iso: null, pnl: 0, count: 0 });
     for (let d = 1; d <= daysInMonth; d++) {
         const iso = `${year}-${String(monthNum).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-        cells.push({ day: d, iso, pnl: dailyPnL[iso] ?? 0 });
+        const s = dailyStats[iso];
+        cells.push({ day: d, iso, pnl: s?.pnl ?? 0, count: s?.count ?? 0 });
     }
-    while (cells.length % 7 !== 0) cells.push({ day: null, iso: null, pnl: 0 });
+    while (cells.length % 7 !== 0) cells.push({ day: null, iso: null, pnl: 0, count: 0 });
 
     let monthlyTotal = 0;
     let tradedDays = 0;
     for (const c of cells) {
-        if (c.iso && dailyPnL[c.iso] !== undefined) {
+        if (c.iso && dailyStats[c.iso] !== undefined) {
             monthlyTotal += c.pnl;
             tradedDays++;
         }
@@ -107,7 +108,7 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
                     if (c.iso === null) {
                         return <div key={i} className="aspect-square" />;
                     }
-                    const hasTrade = dailyPnL[c.iso] !== undefined;
+                    const hasTrade = dailyStats[c.iso] !== undefined;
                     const isToday = c.iso === today;
                     const bg =
                         !hasTrade
@@ -129,10 +130,17 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
                         <div
                             key={i}
                             className={`aspect-square rounded-md p-1 flex flex-col justify-between overflow-hidden ${bg} ${border}`}
-                            title={`${c.iso}${hasTrade ? ` • ${fmtUSD.format(c.pnl)}` : ""}`}
+                            title={`${c.iso}${hasTrade ? ` • ${c.count} trade${c.count === 1 ? "" : "s"} • ${fmtUSD.format(c.pnl)}` : ""}`}
                         >
-                            <div className="text-[10px] font-semibold leading-none text-[var(--color-text-muted)]">
-                                {c.day}
+                            <div className="flex items-start justify-between gap-1">
+                                <span className="text-[10px] font-semibold leading-none text-[var(--color-text-muted)]">
+                                    {c.day}
+                                </span>
+                                {hasTrade && c.count > 0 && (
+                                    <span className="text-[8px] font-bold leading-none text-[var(--color-text-subtle)] tabular-nums">
+                                        {c.count}t
+                                    </span>
+                                )}
                             </div>
                             {hasTrade && (
                                 <div className={`text-[9px] font-bold leading-none text-right tabular-nums truncate ${pnlColor}`}>
