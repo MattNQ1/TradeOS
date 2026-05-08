@@ -4,6 +4,7 @@
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { EventRow } from "./event-row";
+import { EventModal } from "./event-modal";
 import { FilterBar } from "./filter-bar";
 import {
     applyFilters,
@@ -25,6 +26,7 @@ export function CalendarView({ events, error }: CalendarViewProps) {
         countries: new Set(),
         hidePast: true,
     });
+    const [selected, setSelected] = useState<EconomicEvent | null>(null);
 
     // Available currencies — derived from raw events, not filtered ones,
     // so users can always reach all currencies even with strict impact filter.
@@ -81,7 +83,7 @@ export function CalendarView({ events, error }: CalendarViewProps) {
                                 </h2>
                                 <div className="flex flex-col gap-1.5">
                                     {dayEvents.map((e) => (
-                                        <EventRow key={e.id} event={e} />
+                                        <EventRow key={e.id} event={e} onSelect={setSelected} />
                                     ))}
                                 </div>
                             </div>
@@ -89,6 +91,8 @@ export function CalendarView({ events, error }: CalendarViewProps) {
                     })}
                 </div>
             )}
+
+            <EventModal event={selected} onClose={() => setSelected(null)} />
         </div>
     );
 }
