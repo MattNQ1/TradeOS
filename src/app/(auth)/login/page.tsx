@@ -45,6 +45,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                         )}
                         <Button type="submit" className="w-full mt-1">Sign in</Button>
                     </form>
+                    <Link
+                        href="/forgot-password"
+                        className="text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] -mt-1"
+                    >
+                        Forgot your password?
+                    </Link>
                 </Card>
 
                 <p className="text-center text-sm text-[var(--color-text-muted)]">
@@ -52,6 +58,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                     <Link href="/signup" className="text-[var(--color-accent)] font-semibold">
                         Sign up
                     </Link>
+                </p>
+
+                <p className="text-center text-xs text-[var(--color-text-subtle)]">
+                    <Link href="/privacy" className="hover:text-[var(--color-text-muted)]">Privacy</Link>
+                    <span className="mx-1.5">·</span>
+                    <Link href="/terms" className="hover:text-[var(--color-text-muted)]">Terms</Link>
                 </p>
             </div>
         </main>

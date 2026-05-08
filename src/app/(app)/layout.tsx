@@ -4,6 +4,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { NavTabLink } from "@/components/nav-tab-link";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
     const supabase = await createClient();
@@ -36,25 +37,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             {/* Bottom tab bar */}
             <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[var(--color-bg)]/90 backdrop-blur border-t border-[var(--color-border-soft)]">
                 <div className="max-w-md mx-auto grid grid-cols-5">
-                    <TabLink href="/dashboard">Home</TabLink>
-                    <TabLink href="/calculator">Calc</TabLink>
-                    <TabLink href="/journal">Journal</TabLink>
-                    <TabLink href="/prop-firm">Prop</TabLink>
-                    <TabLink href="/economic-calendar">Econ</TabLink>
+                    <NavTabLink href="/dashboard">Home</NavTabLink>
+                    <NavTabLink href="/calculator">Calc</NavTabLink>
+                    <NavTabLink href="/journal">Journal</NavTabLink>
+                    <NavTabLink href="/prop-firm">Prop</NavTabLink>
+                    <NavTabLink href="/economic-calendar">Econ</NavTabLink>
                 </div>
             </nav>
         </div>
-    );
-}
-
-function TabLink({ href, children }: { href: string; children: React.ReactNode }) {
-    return (
-        <Link
-            href={href}
-            className="text-center py-3 text-sm font-semibold text-[var(--color-text-subtle)] hover:text-[var(--color-text)]"
-        >
-            {children}
-        </Link>
     );
 }
 

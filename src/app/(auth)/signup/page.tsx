@@ -61,6 +61,12 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
                         )}
                         <Button type="submit" className="w-full mt-1">Create account</Button>
                     </form>
+                    <p className="text-center text-[11px] text-[var(--color-text-subtle)] leading-relaxed -mt-1">
+                        By creating an account you agree to our{" "}
+                        <Link href="/terms" className="text-[var(--color-accent)]">Terms</Link>
+                        {" "}and{" "}
+                        <Link href="/privacy" className="text-[var(--color-accent)]">Privacy Policy</Link>.
+                    </p>
                 </Card>
 
                 <p className="text-center text-sm text-[var(--color-text-muted)]">
