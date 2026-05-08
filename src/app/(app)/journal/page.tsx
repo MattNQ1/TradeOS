@@ -1,16 +1,13 @@
-// Placeholder. We'll port the journal + calendar in Phase 3 (with Supabase persistence).
-import { Card, CardTitle } from "@/components/ui/card";
+// /journal — Server Component fetches the user's trades, then hands them to
+// the Client Component which renders + handles all interaction.
+import { fetchTrades } from "@/features/journal/server";
+import { JournalView } from "@/features/journal/journal-view";
 
-export default function JournalPage() {
-    return (
-        <div className="flex flex-col gap-4">
-            <h1 className="text-2xl font-bold">Journal</h1>
-            <Card>
-                <CardTitle>Coming in Phase 3</CardTitle>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                    Trades, stats, and the P&amp;L calendar will live here — synced to Supabase so they&apos;re available across all your devices.
-                </p>
-            </Card>
-        </div>
-    );
+// Always render fresh — the Server Action revalidates this path on writes anyway,
+// but during dev we never want stale data.
+export const dynamic = "force-dynamic";
+
+export default async function JournalPage() {
+    const trades = await fetchTrades();
+    return <JournalView initialTrades={trades} />;
 }
