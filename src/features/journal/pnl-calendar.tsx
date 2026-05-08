@@ -136,11 +136,11 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
                                 {c.day}
                             </span>
                             {hasTrade && (
-                                <div className="flex-1 flex flex-col items-center justify-center gap-0.5 min-w-0">
-                                    <span className="text-[8px] font-semibold leading-none text-[var(--color-text)] tabular-nums whitespace-nowrap">
+                                <div className="flex-1 flex flex-col items-center justify-center min-w-0">
+                                    <span className="text-[10px] font-medium leading-tight text-[var(--color-text)] whitespace-nowrap">
                                         {c.count} Trade{c.count === 1 ? "" : "s"}
                                     </span>
-                                    <span className={`text-[10px] font-bold leading-none tabular-nums whitespace-nowrap ${pnlColor}`}>
+                                    <span className={`text-[12px] font-bold leading-tight tabular-nums whitespace-nowrap ${pnlColor}`}>
                                         {formatCompactAmount(c.pnl)}
                                     </span>
                                 </div>
