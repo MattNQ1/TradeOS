@@ -1,37 +1,16 @@
-// Protected /dashboard page. The middleware + layout both ensure the user is signed in.
+// /dashboard — the trader's home. Fetches trades + user, hands to analytics view.
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardTitle } from "@/components/ui/card";
+import { fetchTrades } from "@/features/journal/server";
+import { AnalyticsView } from "@/features/analytics/analytics-view";
+
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-    const supabase = await createClient();
+    const [supabase, trades] = await Promise.all([
+        createClient(),
+        fetchTrades(),
+    ]);
     const { data: { user } } = await supabase.auth.getUser();
 
-    return (
-        <div className="flex flex-col gap-4">
-            <div>
-                <h1 className="text-2xl font-bold">Dashboard</h1>
-                <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                    Signed in as <span className="text-[var(--color-text)]">{user?.email}</span>
-                </p>
-            </div>
-
-            <Card>
-                <CardTitle>Today</CardTitle>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                    Your daily P&amp;L, win rate, and prop firm status will appear here once we wire up the journal.
-                </p>
-            </Card>
-
-            <Card>
-                <CardTitle>Coming next</CardTitle>
-                <ul className="text-sm text-[var(--color-text-muted)] space-y-1.5 list-disc pl-5">
-                    <li>Port the futures calculator</li>
-                    <li>Sync trade journal to Supabase</li>
-                    <li>Economic calendar</li>
-                    <li>AI news explanations</li>
-                    <li>Trade analytics</li>
-                </ul>
-            </Card>
-        </div>
-    );
+    return <AnalyticsView trades={trades} userEmail={user?.email ?? "you"} />;
 }
