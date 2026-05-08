@@ -42,7 +42,8 @@ export async function updateSession(request: NextRequest) {
         request.nextUrl.pathname.startsWith("/dashboard") ||
         request.nextUrl.pathname.startsWith("/calculator") ||
         request.nextUrl.pathname.startsWith("/journal") ||
-        request.nextUrl.pathname.startsWith("/prop-firm");
+        request.nextUrl.pathname.startsWith("/prop-firm") ||
+        request.nextUrl.pathname.startsWith("/economic-calendar");
 
     if (!user && isProtectedRoute) {
         const url = request.nextUrl.clone();
