@@ -68,23 +68,6 @@ export function dailyPnLMap(trades: Trade[]): Record<string, number> {
     return out;
 }
 
-export interface DailyStats {
-    pnl: number;
-    count: number;
-}
-
-/** Group trades by date with both P&L and trade count. Used by the calendar. */
-export function dailyStatsMap(trades: Trade[]): Record<string, DailyStats> {
-    const out: Record<string, DailyStats> = {};
-    for (const t of trades) {
-        const cur = out[t.date] ?? { pnl: 0, count: 0 };
-        cur.pnl += tradePnL(t);
-        cur.count += 1;
-        out[t.date] = cur;
-    }
-    return out;
-}
-
 // ------------------------------------------------------------
 // Date helpers (UTC-stable, no timezone surprises in storage)
 // ------------------------------------------------------------
