@@ -129,22 +129,20 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
                     return (
                         <div
                             key={i}
-                            className={`aspect-square rounded-md p-1 flex flex-col justify-between overflow-hidden ${bg} ${border}`}
+                            className={`aspect-square rounded-md p-1 flex flex-col overflow-hidden ${bg} ${border}`}
                             title={`${c.iso}${hasTrade ? ` • ${c.count} trade${c.count === 1 ? "" : "s"} • ${fmtUSD.format(c.pnl)}` : ""}`}
                         >
-                            <div className="flex items-start justify-between gap-1">
-                                <span className="text-[10px] font-semibold leading-none text-[var(--color-text-muted)]">
-                                    {c.day}
-                                </span>
-                                {hasTrade && c.count > 0 && (
-                                    <span className="text-[8px] font-bold leading-none text-[var(--color-text-subtle)] tabular-nums">
-                                        {c.count}t
-                                    </span>
-                                )}
-                            </div>
+                            <span className="text-[10px] font-semibold leading-none text-[var(--color-text-muted)]">
+                                {c.day}
+                            </span>
                             {hasTrade && (
-                                <div className={`text-[9px] font-bold leading-none text-right tabular-nums truncate ${pnlColor}`}>
-                                    {formatCompactAmount(c.pnl)}
+                                <div className="flex-1 flex flex-col items-center justify-center gap-0.5 min-w-0">
+                                    <span className="text-[8px] font-semibold leading-none text-[var(--color-text)] tabular-nums whitespace-nowrap">
+                                        {c.count} Trade{c.count === 1 ? "" : "s"}
+                                    </span>
+                                    <span className={`text-[10px] font-bold leading-none tabular-nums whitespace-nowrap ${pnlColor}`}>
+                                        {formatCompactAmount(c.pnl)}
+                                    </span>
                                 </div>
                             )}
                         </div>
