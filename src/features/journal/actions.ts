@@ -75,3 +75,38 @@ export async function deleteTrade(id: string): Promise<ActionResult> {
     revalidatePath("/dashboard");
     return { ok: true };
 }
+
+export interface BulkImportResult {
+    ok: boolean;
+    imported: number;
+    error?: string;
+}
+
+/** Bulk-insert a batch of validated trades. Used by the CSV importer. */
+export async function bulkImportTrades(inputs: TradeInput[]): Promise<BulkImportResult> {
+    if (!inputs.length) return { ok: false, imported: 0, error: "No trades to import." };
+
+    const { userId, error: authErr } = await getUserId();
+    if (!userId) return { ok: false, imported: 0, error: authErr };
+
+    const supabase = await createClient();
+    const rows = inputs.map((t) => ({
+        user_id: userId,
+        date: t.date,
+        contract: t.contract,
+        direction: t.direction,
+        contracts: t.contracts,
+        entry_price: t.entry_price,
+        exit_price: t.exit_price,
+        commission: t.commission,
+        planned_risk: t.planned_risk,
+        notes: t.notes,
+    }));
+
+    const { error } = await supabase.from("trades").insert(rows);
+    if (error) return { ok: false, imported: 0, error: error.message };
+
+    revalidatePath("/journal");
+    revalidatePath("/dashboard");
+    return { ok: true, imported: rows.length };
+}

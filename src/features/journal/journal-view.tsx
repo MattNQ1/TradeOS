@@ -10,8 +10,8 @@ import { JournalStatsCard } from "./journal-stats";
 import { PnLCalendar } from "./pnl-calendar";
 import { TradeList } from "./trade-list";
 import { TradeModal } from "./trade-modal";
+import { CSVModal } from "./csv-modal";
 import { calcJournalStats, todayISO } from "./trade-stats";
-import { exportTradesToCSV } from "./csv-export";
 import type { Trade } from "./types";
 
 interface JournalViewProps {
@@ -20,18 +20,18 @@ interface JournalViewProps {
 
 export function JournalView({ initialTrades }: JournalViewProps) {
     const router = useRouter();
-    const [modalOpen, setModalOpen] = useState(false);
+    const [tradeModalOpen, setTradeModalOpen] = useState(false);
     const [editing, setEditing] = useState<Trade | null>(null);
+    const [csvOpen, setCsvOpen] = useState(false);
     const [syncSoonOpen, setSyncSoonOpen] = useState(false);
 
     const stats = useMemo(() => calcJournalStats(initialTrades, todayISO()), [initialTrades]);
 
-    const openAdd = () => { setEditing(null); setModalOpen(true); };
-    const openEdit = (t: Trade) => { setEditing(t); setModalOpen(true); };
-    const closeModal = () => {
-        setModalOpen(false);
+    const openAdd = () => { setEditing(null); setTradeModalOpen(true); };
+    const openEdit = (t: Trade) => { setEditing(t); setTradeModalOpen(true); };
+    const closeTradeModal = () => {
+        setTradeModalOpen(false);
         setEditing(null);
-        // Pull fresh data from the server (Server Action already revalidated).
         router.refresh();
     };
 
@@ -44,46 +44,83 @@ export function JournalView({ initialTrades }: JournalViewProps) {
             <PnLCalendar trades={initialTrades} />
 
             <Card>
-                <div className="flex items-center justify-between gap-2">
+                {/* Header — title on its own row, actions on the next row.
+                    Cleaner than cramming title + 3 buttons across one row. */}
+                <div className="flex items-center justify-between">
                     <CardTitle>Trades</CardTitle>
-                    <div className="flex gap-1.5">
-                        {/* Broker sync — placeholder, opens a "coming soon" preview modal. */}
-                        <button
-                            type="button"
-                            onClick={() => setSyncSoonOpen(true)}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-bg-elev-2)] hover:text-[var(--color-text)] transition-colors"
-                        >
-                            Sync
-                            <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-[var(--color-accent)] text-white leading-none">
-                                Soon
-                            </span>
-                        </button>
-
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            disabled={initialTrades.length === 0}
-                            onClick={() => exportTradesToCSV(initialTrades)}
-                        >
-                            CSV
-                        </Button>
-                        <Button size="sm" onClick={openAdd}>+ Add</Button>
-                    </div>
+                    <Button size="sm" onClick={openAdd}>+ Add trade</Button>
                 </div>
+                <div className="flex items-center gap-1.5 -mt-1">
+                    <ToolbarButton
+                        label="Import CSV"
+                        icon={<UploadIcon />}
+                        onClick={() => setCsvOpen(true)}
+                    />
+                    <ToolbarButton
+                        label="Broker sync"
+                        icon={<SyncIcon />}
+                        badge="Soon"
+                        onClick={() => setSyncSoonOpen(true)}
+                    />
+                </div>
+
                 <TradeList trades={initialTrades} onEdit={openEdit} />
             </Card>
 
-            <TradeModal
-                open={modalOpen}
-                onClose={closeModal}
-                editing={editing}
-            />
-
-            <BrokerSyncSoonModal
-                open={syncSoonOpen}
-                onClose={() => setSyncSoonOpen(false)}
-            />
+            <TradeModal open={tradeModalOpen} onClose={closeTradeModal} editing={editing} />
+            <CSVModal open={csvOpen} onClose={() => setCsvOpen(false)} trades={initialTrades} />
+            <BrokerSyncSoonModal open={syncSoonOpen} onClose={() => setSyncSoonOpen(false)} />
         </div>
+    );
+}
+
+// ============================================================
+// Toolbar button — small, ghost-styled, optional badge
+// ============================================================
+
+interface ToolbarButtonProps {
+    label: string;
+    icon: React.ReactNode;
+    badge?: string;
+    onClick: () => void;
+}
+
+function ToolbarButton({ label, icon, badge, onClick }: ToolbarButtonProps) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-bg-elev-2)] hover:text-[var(--color-text)] transition-colors"
+        >
+            <span className="opacity-70">{icon}</span>
+            {label}
+            {badge && (
+                <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-[var(--color-accent)] text-white leading-none">
+                    {badge}
+                </span>
+            )}
+        </button>
+    );
+}
+
+function UploadIcon() {
+    return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+    );
+}
+
+function SyncIcon() {
+    return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="23 4 23 10 17 10" />
+            <polyline points="1 20 1 14 7 14" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
+            <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14" />
+        </svg>
     );
 }
 
@@ -113,7 +150,6 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
             onClose={onClose}
             className="bg-[var(--color-bg-elev)] text-[var(--color-text)] rounded-2xl p-0 w-full max-w-md backdrop:bg-black/60 backdrop:backdrop-blur-sm overflow-hidden"
         >
-            {/* Hero */}
             <div className="relative bg-gradient-to-br from-emerald-600/40 via-sky-700/20 to-transparent px-5 pt-6 pb-5 overflow-hidden">
                 <div className="absolute -right-4 -top-4 text-[120px] leading-none opacity-10 select-none pointer-events-none">
                     🔌
@@ -140,7 +176,6 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
                 </div>
             </div>
 
-            {/* Body */}
             <div className="px-5 py-5 flex flex-col gap-4">
                 <div>
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
@@ -160,13 +195,8 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
                     </h3>
                     <div className="flex flex-wrap gap-1.5">
                         {[
-                            "Topstep",
-                            "Apex",
-                            "MyFundedFutures",
-                            "TradeStation",
-                            "NinjaTrader",
-                            "Tradovate",
-                            "Rithmic",
+                            "Topstep", "Apex", "MyFundedFutures",
+                            "TradeStation", "NinjaTrader", "Tradovate", "Rithmic",
                         ].map((name) => (
                             <span
                                 key={name}
@@ -180,12 +210,11 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
 
                 <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3.5">
                     <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
-                        <span className="font-semibold text-[var(--color-text)]">In the meantime:</span> log trades manually with <span className="font-semibold text-[var(--color-text)]">+ Add</span>, or import historical data with <span className="font-semibold text-[var(--color-text)]">CSV</span>.
+                        <span className="font-semibold text-[var(--color-text)]">In the meantime:</span> log trades manually with <span className="font-semibold text-[var(--color-text)]">+ Add trade</span>, or bulk-load with <span className="font-semibold text-[var(--color-text)]">Import CSV</span>.
                     </p>
                 </div>
             </div>
 
-            {/* Footer */}
             <div className="px-5 py-4 border-t border-[var(--color-border-soft)] flex justify-end">
                 <Button variant="ghost" onClick={onClose}>Got it</Button>
             </div>
