@@ -3,16 +3,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import {
     CATEGORY_STYLES,
     matchEvent,
 } from "./descriptions";
 import { formatEventTime, IMPACT_COLOR } from "./helpers";
+import { Button } from "@/components/ui/button";
 import type { EconomicEvent } from "./types";
 
 interface EventModalProps {
-    event: EconomicEvent | null;
+    event: (EconomicEvent & { __paywalled?: boolean }) | null;
     onClose: () => void;
+    /** When false, gated event clicks show the paywall variant. */
+    isPaid?: boolean;
 }
 
 const dayFmt = new Intl.DateTimeFormat(undefined, {
@@ -40,6 +44,56 @@ export function EventModal({ event, onClose }: EventModalProps) {
                 onClose={onClose}
                 className="bg-transparent p-0 backdrop:bg-black/60 backdrop:backdrop-blur-sm"
             />
+        );
+    }
+
+    // Paywall variant: shown when a free user taps a gated event.
+    if (event.__paywalled) {
+        return (
+            <dialog
+                ref={dialogRef}
+                onClose={onClose}
+                className="bg-[var(--color-bg-elev)] text-[var(--color-text)] rounded-2xl p-0 w-full max-w-md backdrop:bg-black/60 backdrop:backdrop-blur-sm overflow-hidden"
+            >
+                <div className="relative bg-gradient-to-br from-emerald-600/40 via-violet-700/20 to-transparent px-5 pt-6 pb-5 overflow-hidden">
+                    <div className="absolute -right-4 -top-4 text-[120px] leading-none opacity-10 select-none pointer-events-none">🔒</div>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        aria-label="Close"
+                        className="absolute right-3 top-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur text-white flex items-center justify-center hover:bg-black/50"
+                    >✕</button>
+                    <div className="relative">
+                        <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-white px-2 py-1 rounded bg-[var(--color-accent)] mb-3">
+                            Pro feature
+                        </span>
+                        <h2 className="text-2xl font-bold leading-tight tracking-tight">
+                            Unlock the full economic calendar
+                        </h2>
+                        <p className="text-sm text-[var(--color-text-muted)] mt-2">
+                            Free accounts see only the next 2 events. Upgrade to read every release with plain-English explanations.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="px-5 py-5 flex flex-col gap-4">
+                    <ul className="space-y-1.5">
+                        <PaywallFeature>Every economic release this week + next week</PaywallFeature>
+                        <PaywallFeature>Plain-English explanations (NFP, CPI, FOMC, GDP…)</PaywallFeature>
+                        <PaywallFeature>How to interpret each release for trading</PaywallFeature>
+                        <PaywallFeature>Live forecast / previous / actual values</PaywallFeature>
+                    </ul>
+
+                    <div className="flex flex-col gap-2">
+                        <Link href="/settings" className="w-full">
+                            <Button className="w-full">Upgrade to Pro · $19/mo</Button>
+                        </Link>
+                        <Link href="/settings" className="w-full">
+                            <Button variant="secondary" className="w-full">Lifetime · $199 once</Button>
+                        </Link>
+                    </div>
+                </div>
+            </dialog>
         );
     }
 
@@ -222,5 +276,14 @@ function NoDescriptionFallback({ category }: { category: string }) {
                 Generally: higher than forecast tends to be bullish for the country&apos;s currency; lower tends to be bearish. Watch the actual vs forecast above.
             </p>
         </div>
+    );
+}
+
+function PaywallFeature({ children }: { children: React.ReactNode }) {
+    return (
+        <li className="flex items-start gap-2 text-sm">
+            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+            <span className="text-[var(--color-text)]">{children}</span>
+        </li>
     );
 }

@@ -1,14 +1,15 @@
-// /economic-calendar — Server Component fetches the FF feed (cached 1h) then
-// hands the data to a Client Component for filtering + display.
+// /economic-calendar — Server Component fetches the FF feed (cached 1h) +
+// the user's tier in parallel, then hands the data to a Client Component.
 import { fetchEconomicEvents } from "@/features/economic-calendar/server";
 import { CalendarView } from "@/features/economic-calendar/calendar-view";
+import { getUserTier } from "@/features/billing/tier";
 
-// We rely on `next: { revalidate: 3600 }` inside fetchEconomicEvents to cache,
-// so the page itself can be statically optimized. But because we're behind auth,
-// we keep it dynamic so each user request goes through middleware.
 export const dynamic = "force-dynamic";
 
 export default async function EconomicCalendarPage() {
-    const { events, error } = await fetchEconomicEvents();
-    return <CalendarView events={events} error={error} />;
+    const [{ events, error }, tierInfo] = await Promise.all([
+        fetchEconomicEvents(),
+        getUserTier(),
+    ]);
+    return <CalendarView events={events} error={error} isPaid={tierInfo.isPaid} />;
 }

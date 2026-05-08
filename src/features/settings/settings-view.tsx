@@ -7,24 +7,42 @@ import { SecuritySection } from "./security-section";
 import { SubscriptionSection } from "./subscription-section";
 import { DataSection } from "./data-section";
 import type { Trade } from "@/features/journal/types";
+import type { TierInfo } from "@/features/billing/tier";
 
 interface SettingsViewProps {
     email: string;
     createdAt: string;
     emailConfirmed: boolean;
     trades: Trade[];
+    tierInfo: TierInfo;
+    upgradedPlan?: string;
 }
 
-export function SettingsView({ email, createdAt, emailConfirmed, trades }: SettingsViewProps) {
+export function SettingsView({ email, createdAt, emailConfirmed, trades, tierInfo, upgradedPlan }: SettingsViewProps) {
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-bold">Settings</h1>
+
+            {upgradedPlan && (
+                <div className="bg-[color-mix(in_oklab,var(--color-gain)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-gain)_30%,transparent)] rounded-xl p-4 text-sm">
+                    <p className="font-bold text-[var(--color-gain)]">
+                        🎉 Welcome to {upgradedPlan === "lifetime" ? "Lifetime" : "Pro"}!
+                    </p>
+                    <p className="text-[var(--color-text-muted)] mt-1">
+                        Your payment was successful. It can take a few seconds for everything to unlock — refresh if anything still looks gated.
+                    </p>
+                </div>
+            )}
 
             <AccountSection email={email} createdAt={createdAt} emailConfirmed={emailConfirmed} />
 
             <SecuritySection />
 
-            <SubscriptionSection />
+            <SubscriptionSection
+                tier={tierInfo.tier}
+                cancelAtPeriodEnd={tierInfo.cancelAtPeriodEnd}
+                currentPeriodEnd={tierInfo.currentPeriodEnd}
+            />
 
             <DataSection trades={trades} />
 

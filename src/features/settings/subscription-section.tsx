@@ -1,183 +1,232 @@
-// Subscription card — current plan + Pro upgrade preview.
-// Stripe wiring will replace the "Coming soon" handler when ready to launch.
+// Subscription card — shows current tier + upgrade buttons that route to Stripe Checkout.
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useTransition } from "react";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { createCheckoutSession, createPortalSession, type Plan } from "@/features/billing/actions";
+import type { Tier } from "@/features/billing/tier";
 
-export function SubscriptionSection() {
-    const [proOpen, setProOpen] = useState(false);
+interface SubscriptionSectionProps {
+    tier: Tier;
+    cancelAtPeriodEnd: boolean;
+    currentPeriodEnd: string | null;
+}
 
+export function SubscriptionSection({ tier, cancelAtPeriodEnd, currentPeriodEnd }: SubscriptionSectionProps) {
+    return (
+        <Card>
+            <CardTitle>Subscription</CardTitle>
+            {tier === "free" && <FreeView />}
+            {tier === "pro" && (
+                <ProView cancelAtPeriodEnd={cancelAtPeriodEnd} currentPeriodEnd={currentPeriodEnd} />
+            )}
+            {tier === "lifetime" && <LifetimeView />}
+        </Card>
+    );
+}
+
+// ============================================================
+// FREE view — current plan + upgrade CTAs
+// ============================================================
+
+function FreeView() {
     return (
         <>
-            <Card>
-                <CardTitle>Subscription</CardTitle>
-
-                {/* Current plan */}
-                <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-                                Current plan
-                            </p>
-                            <p className="text-lg font-bold mt-0.5">Free</p>
-                            <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
-                                All core features. No credit card needed.
-                            </p>
-                        </div>
-                        <span className="text-3xl">✦</span>
+            {/* Current plan */}
+            <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Current plan
+                        </p>
+                        <p className="text-lg font-bold mt-0.5">Free</p>
+                        <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
+                            Calculator + manual journal. Upgrade for the full toolkit.
+                        </p>
                     </div>
+                    <span className="text-3xl">✦</span>
                 </div>
+            </div>
 
-                {/* Pro upgrade card */}
-                <div className="relative overflow-hidden rounded-xl border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)]">
-                    {/* Subtle gradient backdrop */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/15 via-violet-700/10 to-transparent pointer-events-none" />
+            {/* Pro upgrade — recurring */}
+            <UpgradeCard
+                plan="pro"
+                badgeText="Most popular"
+                title="TradeOS Pro"
+                price="$19"
+                priceSuffix="/mo"
+                features={[
+                    "Unlimited trades + history",
+                    "Full economic calendar with AI-style explanations",
+                    "Custom prop firm rules + multi-account",
+                    "Auto-sync from your broker (when launched)",
+                    "Priority support",
+                ]}
+                accentClass="border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)]"
+                gradientClass="from-emerald-600/15 via-violet-700/10 to-transparent"
+                buttonText="Upgrade to Pro"
+            />
 
-                    <div className="relative p-4">
-                        <div className="flex items-start justify-between mb-3">
-                            <div>
-                                <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
-                                    Recommended
-                                </p>
-                                <h3 className="text-xl font-bold mt-0.5 flex items-center gap-1.5">
-                                    <span>⭐</span> TradeOS Pro
-                                </h3>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-[10px] font-semibold text-[var(--color-text-muted)]">From</p>
-                                <p className="text-2xl font-bold tabular-nums leading-tight">
-                                    $19<span className="text-xs font-normal text-[var(--color-text-muted)]">/mo</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <ul className="space-y-1.5 mb-4">
-                            <Feature>Unlimited trades &amp; history</Feature>
-                            <Feature>Auto-sync from your broker / prop firm</Feature>
-                            <Feature>AI insights on every event &amp; trade</Feature>
-                            <Feature>Custom date ranges + advanced filters</Feature>
-                            <Feature>Priority support</Feature>
-                        </ul>
-
-                        <Button className="w-full" onClick={() => setProOpen(true)}>
-                            Upgrade to Pro
-                            <span className="ml-1.5 text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-white/20 text-white leading-none">
-                                Soon
-                            </span>
-                        </Button>
-                    </div>
-                </div>
-            </Card>
-
-            <ProSoonModal open={proOpen} onClose={() => setProOpen(false)} />
+            {/* Lifetime — one-time */}
+            <UpgradeCard
+                plan="lifetime"
+                badgeText="Best value"
+                title="Lifetime"
+                price="$199"
+                priceSuffix=" once"
+                features={[
+                    "All Pro features, forever",
+                    "No recurring fees",
+                    "Lifetime updates included",
+                    "Founders pricing — locks in before public launch",
+                ]}
+                accentClass="border-[color-mix(in_oklab,var(--color-warn)_40%,transparent)]"
+                gradientClass="from-amber-600/20 via-orange-700/10 to-transparent"
+                buttonText="Get Lifetime"
+            />
         </>
     );
 }
 
-function Feature({ children }: { children: React.ReactNode }) {
+// ============================================================
+// PRO view — current state + manage subscription
+// ============================================================
+
+function ProView({
+    cancelAtPeriodEnd, currentPeriodEnd,
+}: { cancelAtPeriodEnd: boolean; currentPeriodEnd: string | null }) {
+    const [pending, startTransition] = useTransition();
+
+    const onManage = () => {
+        startTransition(async () => {
+            const res = await createPortalSession();
+            if (res.ok && res.url) window.location.href = res.url;
+            else alert(res.error ?? "Could not open billing portal.");
+        });
+    };
+
+    const periodEndText = currentPeriodEnd
+        ? new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" })
+            .format(new Date(currentPeriodEnd))
+        : null;
+
     return (
-        <li className="flex items-start gap-2 text-sm">
-            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
-            <span className="text-[var(--color-text)]">{children}</span>
-        </li>
+        <>
+            <div className="relative overflow-hidden bg-[var(--color-bg-elev-2)] border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] rounded-xl p-4">
+                <div className="absolute -right-2 -top-2 text-[80px] leading-none opacity-10 select-none pointer-events-none">⭐</div>
+                <div className="relative">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+                        Active subscription
+                    </p>
+                    <p className="text-xl font-bold mt-1">TradeOS Pro</p>
+                    {periodEndText && (
+                        <p className="text-xs text-[var(--color-text-muted)] mt-1.5">
+                            {cancelAtPeriodEnd
+                                ? `Cancels on ${periodEndText}`
+                                : `Renews on ${periodEndText}`}
+                        </p>
+                    )}
+                </div>
+            </div>
+
+            <Button variant="secondary" className="w-full" onClick={onManage} disabled={pending}>
+                {pending ? "Opening…" : "Manage subscription"}
+            </Button>
+            <p className="text-xs text-[var(--color-text-muted)] -mt-1">
+                Manage billing, update payment method, or cancel via Stripe&apos;s secure portal.
+            </p>
+        </>
     );
 }
 
 // ============================================================
-// "Coming soon" preview modal for Pro
+// LIFETIME view — unique badge
 // ============================================================
 
-interface ProSoonModalProps {
-    open: boolean;
-    onClose: () => void;
+function LifetimeView() {
+    return (
+        <div className="relative overflow-hidden rounded-xl border border-[color-mix(in_oklab,var(--color-warn)_40%,transparent)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-600/25 via-orange-700/15 to-transparent pointer-events-none" />
+            <div className="relative p-5 text-center">
+                <div className="text-5xl mb-2">🏆</div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-warn)]">
+                    Founder
+                </p>
+                <p className="text-xl font-bold mt-1">Lifetime access</p>
+                <p className="text-sm text-[var(--color-text-muted)] mt-2">
+                    All Pro features, forever. No recurring fees, no expirations.
+                </p>
+            </div>
+        </div>
+    );
 }
 
-function ProSoonModal({ open, onClose }: ProSoonModalProps) {
-    const dialogRef = useRef<HTMLDialogElement>(null);
+// ============================================================
+// Upgrade card with checkout flow
+// ============================================================
 
-    useEffect(() => {
-        const dlg = dialogRef.current;
-        if (!dlg) return;
-        if (open && !dlg.open) dlg.showModal();
-        if (!open && dlg.open) dlg.close();
-    }, [open]);
+interface UpgradeCardProps {
+    plan: Plan;
+    badgeText: string;
+    title: string;
+    price: string;
+    priceSuffix: string;
+    features: string[];
+    accentClass: string;
+    gradientClass: string;
+    buttonText: string;
+}
+
+function UpgradeCard({
+    plan, badgeText, title, price, priceSuffix, features, accentClass, gradientClass, buttonText,
+}: UpgradeCardProps) {
+    const [pending, startTransition] = useTransition();
+
+    const onUpgrade = () => {
+        startTransition(async () => {
+            const res = await createCheckoutSession(plan);
+            if (res.ok && res.url) {
+                window.location.href = res.url;
+            } else {
+                alert(res.error ?? "Could not start checkout.");
+            }
+        });
+    };
 
     return (
-        <dialog
-            ref={dialogRef}
-            onClose={onClose}
-            className="bg-[var(--color-bg-elev)] text-[var(--color-text)] rounded-2xl p-0 w-full max-w-md backdrop:bg-black/60 backdrop:backdrop-blur-sm overflow-hidden"
-        >
-            <div className="relative bg-gradient-to-br from-emerald-600/40 via-violet-700/20 to-transparent px-5 pt-6 pb-5 overflow-hidden">
-                <div className="absolute -right-4 -top-4 text-[120px] leading-none opacity-10 select-none pointer-events-none">
-                    ⭐
-                </div>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    aria-label="Close"
-                    className="absolute right-3 top-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur text-white flex items-center justify-center hover:bg-black/50"
-                >
-                    ✕
-                </button>
+        <div className={`relative overflow-hidden rounded-xl border ${accentClass}`}>
+            <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none`} />
 
-                <div className="relative">
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-white px-2 py-1 rounded bg-[var(--color-accent)] mb-3">
-                        Coming soon
-                    </span>
-                    <h2 className="text-2xl font-bold leading-tight tracking-tight">
-                        TradeOS Pro
-                    </h2>
-                    <p className="text-sm text-[var(--color-text-muted)] mt-2">
-                        Pro plans aren&apos;t open yet — but they&apos;re coming. Keep using the free tier; nothing you build here will be lost.
-                    </p>
-                </div>
-            </div>
-
-            <div className="px-5 py-5 flex flex-col gap-4">
-                <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
-                        Planned tiers
-                    </h3>
-                    <div className="space-y-2">
-                        <TierRow name="Free" price="$0" desc="Calculator, journal, calendar, prop firm tools" />
-                        <TierRow name="Pro" price="$19/mo" desc="Auto-sync, AI insights, unlimited history" highlight />
-                        <TierRow name="Lifetime" price="$199" desc="One-time. All Pro features, forever." />
+            <div className="relative p-4">
+                <div className="flex items-start justify-between mb-3">
+                    <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+                            {badgeText}
+                        </p>
+                        <h3 className="text-xl font-bold mt-0.5">{title}</h3>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-2xl font-bold tabular-nums leading-tight">
+                            {price}
+                            <span className="text-xs font-normal text-[var(--color-text-muted)]">{priceSuffix}</span>
+                        </p>
                     </div>
                 </div>
 
-                <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3.5">
-                    <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
-                        <span className="font-semibold text-[var(--color-text)]">Early users get a discount.</span> Sign up early, lock in a lower price when Pro launches.
-                    </p>
-                </div>
-            </div>
+                <ul className="space-y-1.5 mb-4">
+                    {features.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+                            <span className="text-[var(--color-text)]">{f}</span>
+                        </li>
+                    ))}
+                </ul>
 
-            <div className="px-5 py-4 border-t border-[var(--color-border-soft)] flex justify-end">
-                <Button variant="ghost" onClick={onClose}>Got it</Button>
+                <Button className="w-full" onClick={onUpgrade} disabled={pending}>
+                    {pending ? "Redirecting…" : buttonText}
+                </Button>
             </div>
-        </dialog>
-    );
-}
-
-function TierRow({
-    name, price, desc, highlight,
-}: { name: string; price: string; desc: string; highlight?: boolean }) {
-    return (
-        <div
-            className={`flex items-start justify-between gap-3 p-3 rounded-lg border ${
-                highlight
-                    ? "bg-[color-mix(in_oklab,var(--color-accent)_8%,transparent)] border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)]"
-                    : "bg-[var(--color-bg-elev-2)] border-[var(--color-border)]"
-            }`}
-        >
-            <div className="min-w-0">
-                <p className={`text-sm font-bold ${highlight ? "text-[var(--color-accent)]" : ""}`}>{name}</p>
-                <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{desc}</p>
-            </div>
-            <p className="text-sm font-bold tabular-nums whitespace-nowrap">{price}</p>
         </div>
     );
 }
