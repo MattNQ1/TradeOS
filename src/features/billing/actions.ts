@@ -67,6 +67,16 @@ export async function createCheckoutSession(plan: Plan): Promise<CheckoutResult>
             metadata: { plan, supabase_user_id: user.id },
             // Allow promotion codes (you can create them in the Stripe dashboard).
             allow_promotion_codes: true,
+            // 7-day free trial on Pro — hugely boosts trial→paid conversion.
+            // Card still required up-front so auto-conversion at trial end works.
+            ...(plan === "pro"
+                ? {
+                    subscription_data: {
+                        trial_period_days: 7,
+                        metadata: { plan, supabase_user_id: user.id },
+                    },
+                }
+                : {}),
         });
 
         if (!session.url) return { ok: false, error: "Could not create checkout URL." };

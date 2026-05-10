@@ -4,8 +4,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FREE_TRADE_LIMIT, FREE_TRADE_WARNING_THRESHOLD } from "@/features/billing/limits";
+import { UpgradePrompt } from "@/features/billing/upgrade-prompt";
 import { JournalStatsCard } from "./journal-stats";
 import { PnLCalendar } from "./pnl-calendar";
 import { TradeList } from "./trade-list";
@@ -16,9 +19,10 @@ import type { Trade } from "./types";
 
 interface JournalViewProps {
     initialTrades: Trade[];
+    isPaid: boolean;
 }
 
-export function JournalView({ initialTrades }: JournalViewProps) {
+export function JournalView({ initialTrades, isPaid }: JournalViewProps) {
     const router = useRouter();
     const [tradeModalOpen, setTradeModalOpen] = useState(false);
     const [editing, setEditing] = useState<Trade | null>(null);
@@ -27,7 +31,21 @@ export function JournalView({ initialTrades }: JournalViewProps) {
 
     const stats = useMemo(() => calcJournalStats(initialTrades, todayISO()), [initialTrades]);
 
-    const openAdd = () => { setEditing(null); setTradeModalOpen(true); };
+    const tradeCount = initialTrades.length;
+    const atLimit = !isPaid && tradeCount >= FREE_TRADE_LIMIT;
+    const showWarningBanner = !isPaid && tradeCount >= FREE_TRADE_WARNING_THRESHOLD && tradeCount < FREE_TRADE_LIMIT;
+    const remainingFreeTrades = Math.max(0, FREE_TRADE_LIMIT - tradeCount);
+
+    const openAdd = () => {
+        if (atLimit) {
+            // Don't even open the modal — show the paywall card below the list.
+            // Scroll to it so the user sees the upgrade CTA.
+            document.getElementById("trade-limit-paywall")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+        setEditing(null);
+        setTradeModalOpen(true);
+    };
     const openEdit = (t: Trade) => { setEditing(t); setTradeModalOpen(true); };
     const closeTradeModal = () => {
         setTradeModalOpen(false);
@@ -43,17 +61,28 @@ export function JournalView({ initialTrades }: JournalViewProps) {
 
             <PnLCalendar trades={initialTrades} />
 
+            {/* Soft warning when approaching the free limit */}
+            {showWarningBanner && (
+                <div className="bg-[color-mix(in_oklab,var(--color-warn)_10%,transparent)] border border-[color-mix(in_oklab,var(--color-warn)_30%,transparent)] rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                    <p className="text-sm">
+                        <span className="font-semibold text-[var(--color-warn)]">{remainingFreeTrades} trades left</span> on Free plan ({tradeCount}/{FREE_TRADE_LIMIT}).
+                    </p>
+                    <Link href="/settings">
+                        <Button size="sm">Upgrade</Button>
+                    </Link>
+                </div>
+            )}
+
             <Card>
-                {/* Header — title on its own row, actions on the next row.
-                    Cleaner than cramming title + 3 buttons across one row. */}
                 <div className="flex items-center justify-between">
-                    <CardTitle>Trades</CardTitle>
+                    <CardTitle>Trades{!isPaid ? ` · ${tradeCount}/${FREE_TRADE_LIMIT}` : ""}</CardTitle>
                     <Button size="sm" onClick={openAdd}>+ Add trade</Button>
                 </div>
                 <div className="flex items-center gap-1.5 -mt-1">
                     <ToolbarButton
                         label="Import/Export CSV"
                         icon={<UploadIcon />}
+                        badge={!isPaid ? "Pro" : undefined}
                         onClick={() => setCsvOpen(true)}
                     />
                     <ToolbarButton
@@ -67,8 +96,25 @@ export function JournalView({ initialTrades }: JournalViewProps) {
                 <TradeList trades={initialTrades} onEdit={openEdit} />
             </Card>
 
+            {/* Hard paywall when at the trade limit */}
+            {atLimit && (
+                <div id="trade-limit-paywall">
+                    <UpgradePrompt
+                        title={`You've hit the ${FREE_TRADE_LIMIT}-trade Free limit`}
+                        description="Free plan caps your journal at 25 trades. Upgrade to Pro for unlimited history — your existing trades stay safe either way."
+                        features={[
+                            "Unlimited trades + history",
+                            "CSV bulk import",
+                            "Custom prop firm rules",
+                            "Full economic calendar with explanations",
+                            "Priority support",
+                        ]}
+                    />
+                </div>
+            )}
+
             <TradeModal open={tradeModalOpen} onClose={closeTradeModal} editing={editing} />
-            <CSVModal open={csvOpen} onClose={() => setCsvOpen(false)} trades={initialTrades} />
+            <CSVModal open={csvOpen} onClose={() => setCsvOpen(false)} trades={initialTrades} isPaid={isPaid} />
             <BrokerSyncSoonModal open={syncSoonOpen} onClose={() => setSyncSoonOpen(false)} />
         </div>
     );

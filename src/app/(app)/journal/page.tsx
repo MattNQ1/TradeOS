@@ -1,13 +1,14 @@
-// /journal — Server Component fetches the user's trades, then hands them to
-// the Client Component which renders + handles all interaction.
+// /journal — Server Component fetches trades + user tier in parallel.
 import { fetchTrades } from "@/features/journal/server";
+import { getUserTier } from "@/features/billing/tier";
 import { JournalView } from "@/features/journal/journal-view";
 
-// Always render fresh — the Server Action revalidates this path on writes anyway,
-// but during dev we never want stale data.
 export const dynamic = "force-dynamic";
 
 export default async function JournalPage() {
-    const trades = await fetchTrades();
-    return <JournalView initialTrades={trades} />;
+    const [trades, tierInfo] = await Promise.all([
+        fetchTrades(),
+        getUserTier(),
+    ]);
+    return <JournalView initialTrades={trades} isPaid={tierInfo.isPaid} />;
 }

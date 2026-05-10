@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { fmtUSD0 } from "@/features/calculator/calc";
+import { UpgradePrompt } from "@/features/billing/upgrade-prompt";
 import { PROP_FIRM_PRESETS } from "./presets";
 import {
     calcDailyTracker,
@@ -24,9 +25,10 @@ import type { Trade } from "@/features/journal/types";
 interface PropFirmViewProps {
     initialConfig: PropFirmConfig;
     trades: Trade[];
+    isPaid: boolean;
 }
 
-export function PropFirmView({ initialConfig, trades }: PropFirmViewProps) {
+export function PropFirmView({ initialConfig, trades, isPaid }: PropFirmViewProps) {
     const [config, setConfig] = useState<PropFirmConfig>(initialConfig);
     const [, startTransition] = useTransition();
     const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -85,11 +87,17 @@ export function PropFirmView({ initialConfig, trades }: PropFirmViewProps) {
                     <select
                         id="preset"
                         value={config.preset}
-                        onChange={(e) => updateConfig({ preset: e.target.value })}
+                        onChange={(e) => {
+                            const v = e.target.value;
+                            // Free users can't actually save preset='custom' (server rejects),
+                            // but we surface a friendlier flow: just set it locally so the
+                            // paywall card appears below where the editor would be.
+                            updateConfig({ preset: v });
+                        }}
                         className="w-full bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg px-3.5 py-3 text-base text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                     >
                         <option value="none">— No preset —</option>
-                        <option value="custom">✎ Custom (your own rules)</option>
+                        <option value="custom">{isPaid ? "✎ Custom (your own rules)" : "🔒 Custom (your own rules) — Pro"}</option>
                         {PROP_FIRM_PRESETS.map((p) => (
                             <option key={p.id} value={p.id}>
                                 {p.firm} • {p.account}
@@ -113,8 +121,21 @@ export function PropFirmView({ initialConfig, trades }: PropFirmViewProps) {
                 </div>
             </Card>
 
-            {/* ---------- Custom rules editor ---------- */}
-            {config.preset === "custom" && (
+            {/* ---------- Custom rules editor (Pro-only) ---------- */}
+            {config.preset === "custom" && !isPaid && (
+                <UpgradePrompt
+                    title="Custom prop firm rules are a Pro feature"
+                    description="Free accounts can use any of the 15 built-in presets (Topstep, Apex, MyFundedFutures, FTMO, etc.). Upgrade to Pro to define your own account size, profit target, max loss, and trailing rules."
+                    features={[
+                        "Define your exact account size, target, max loss, daily, trailing",
+                        "Apply to multiple firms not in our preset list",
+                        "Use for personal accounts with custom risk rules",
+                        "7-day free trial — no charge if you cancel",
+                    ]}
+                />
+            )}
+
+            {config.preset === "custom" && isPaid && (
                 <Card>
                     <CardTitle>Custom rules</CardTitle>
                     <p className="text-sm text-[var(--color-text-muted)] -mt-1">

@@ -11,15 +11,20 @@ interface SubscriptionSectionProps {
     tier: Tier;
     cancelAtPeriodEnd: boolean;
     currentPeriodEnd: string | null;
+    isTrialing: boolean;
 }
 
-export function SubscriptionSection({ tier, cancelAtPeriodEnd, currentPeriodEnd }: SubscriptionSectionProps) {
+export function SubscriptionSection({ tier, cancelAtPeriodEnd, currentPeriodEnd, isTrialing }: SubscriptionSectionProps) {
     return (
         <Card>
             <CardTitle>Subscription</CardTitle>
             {tier === "free" && <FreeView />}
             {tier === "pro" && (
-                <ProView cancelAtPeriodEnd={cancelAtPeriodEnd} currentPeriodEnd={currentPeriodEnd} />
+                <ProView
+                    cancelAtPeriodEnd={cancelAtPeriodEnd}
+                    currentPeriodEnd={currentPeriodEnd}
+                    isTrialing={isTrialing}
+                />
             )}
             {tier === "lifetime" && <LifetimeView />}
         </Card>
@@ -52,20 +57,21 @@ function FreeView() {
             {/* Pro upgrade — recurring */}
             <UpgradeCard
                 plan="pro"
-                badgeText="Most popular"
+                badgeText="7-day free trial · most popular"
                 title="TradeOS Pro"
                 price="$19"
                 priceSuffix="/mo"
                 features={[
+                    "7-day free trial — cancel anytime, no charge",
                     "Unlimited trades + history",
-                    "Full economic calendar with AI-style explanations",
-                    "Custom prop firm rules + multi-account",
-                    "Auto-sync from your broker (when launched)",
+                    "CSV bulk import",
+                    "Full economic calendar with explanations",
+                    "Custom prop firm rules",
                     "Priority support",
                 ]}
                 accentClass="border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)]"
                 gradientClass="from-emerald-600/15 via-violet-700/10 to-transparent"
-                buttonText="Upgrade to Pro"
+                buttonText="Start 7-day free trial"
             />
 
             {/* Lifetime — one-time */}
@@ -94,8 +100,8 @@ function FreeView() {
 // ============================================================
 
 function ProView({
-    cancelAtPeriodEnd, currentPeriodEnd,
-}: { cancelAtPeriodEnd: boolean; currentPeriodEnd: string | null }) {
+    cancelAtPeriodEnd, currentPeriodEnd, isTrialing,
+}: { cancelAtPeriodEnd: boolean; currentPeriodEnd: string | null; isTrialing: boolean }) {
     const [pending, startTransition] = useTransition();
 
     const onManage = () => {
@@ -111,21 +117,49 @@ function ProView({
             .format(new Date(currentPeriodEnd))
         : null;
 
+    const daysLeft = currentPeriodEnd
+        ? Math.max(0, Math.ceil((new Date(currentPeriodEnd).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+        : null;
+
+    const statusText = (() => {
+        if (!periodEndText) return null;
+        if (isTrialing) {
+            return cancelAtPeriodEnd
+                ? `Trial ends on ${periodEndText} — won't auto-bill`
+                : `Trial ends on ${periodEndText} — first charge of $19 then`;
+        }
+        return cancelAtPeriodEnd
+            ? `Cancels on ${periodEndText}`
+            : `Renews on ${periodEndText}`;
+    })();
+
     return (
         <>
             <div className="relative overflow-hidden bg-[var(--color-bg-elev-2)] border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] rounded-xl p-4">
-                <div className="absolute -right-2 -top-2 text-[80px] leading-none opacity-10 select-none pointer-events-none">⭐</div>
+                <div className="absolute -right-2 -top-2 text-[80px] leading-none opacity-10 select-none pointer-events-none">
+                    {isTrialing ? "🎁" : "⭐"}
+                </div>
                 <div className="relative">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
-                        Active subscription
-                    </p>
-                    <p className="text-xl font-bold mt-1">TradeOS Pro</p>
-                    {periodEndText && (
-                        <p className="text-xs text-[var(--color-text-muted)] mt-1.5">
-                            {cancelAtPeriodEnd
-                                ? `Cancels on ${periodEndText}`
-                                : `Renews on ${periodEndText}`}
+                    <div className="flex items-center gap-2">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+                            Active subscription
                         </p>
+                        {isTrialing && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--color-warn)] text-white leading-none">
+                                Trial
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xl font-bold mt-1">
+                        TradeOS Pro
+                        {isTrialing && daysLeft !== null && (
+                            <span className="text-sm font-normal text-[var(--color-text-muted)] ml-2">
+                                · {daysLeft} day{daysLeft === 1 ? "" : "s"} left
+                            </span>
+                        )}
+                    </p>
+                    {statusText && (
+                        <p className="text-xs text-[var(--color-text-muted)] mt-1.5">{statusText}</p>
                     )}
                 </div>
             </div>

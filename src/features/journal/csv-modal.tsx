@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { parseCSVTrades, type ParseResult } from "./csv-import";
 import { bulkImportTrades } from "./actions";
@@ -17,11 +18,13 @@ interface CSVModalProps {
     onClose: () => void;
     /** Used by the export action — current trades in the journal. */
     trades: Trade[];
+    /** Free users see export only; import is gated behind a paywall. */
+    isPaid: boolean;
 }
 
 type ImportStage = "idle" | "parsed" | "saving" | "done" | "error";
 
-export function CSVModal({ open, onClose, trades }: CSVModalProps) {
+export function CSVModal({ open, onClose, trades, isPaid }: CSVModalProps) {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
@@ -96,51 +99,55 @@ export function CSVModal({ open, onClose, trades }: CSVModalProps) {
                 </button>
 
                 <div className="relative">
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-white px-2 py-1 rounded bg-[var(--color-accent)] mb-3">
-                        Bulk import
+                    <span className={`inline-block text-[10px] font-bold uppercase tracking-wider text-white px-2 py-1 rounded mb-3 ${isPaid ? "bg-[var(--color-accent)]" : "bg-[var(--color-warn)]"}`}>
+                        {isPaid ? "Bulk import" : "Pro feature"}
                     </span>
                     <h2 className="text-2xl font-bold leading-tight tracking-tight">
-                        Import trades from CSV
+                        {isPaid ? "Import trades from CSV" : "Bulk CSV import is a Pro feature"}
                     </h2>
                     <p className="text-sm text-[var(--color-text-muted)] mt-2">
-                        Bring in trades from a spreadsheet, your broker&apos;s export, or a backup. Your existing trades won&apos;t be touched.
+                        {isPaid
+                            ? "Bring in trades from a spreadsheet, your broker's export, or a backup. Your existing trades won't be touched."
+                            : "Free accounts can export — but bulk-importing trades is part of TradeOS Pro. You can still export your current trades below."}
                     </p>
                 </div>
             </div>
 
             {/* Body */}
             <div className="px-5 py-5 max-h-[55vh] overflow-y-auto flex flex-col gap-4">
-                {stage === "idle" && (
-                    <IdleStage onPickFile={onPickFile} fileInputRef={fileInputRef} onFile={onFile} />
-                )}
-
-                {stage === "parsed" && parseResult && (
-                    <ParsedStage
-                        result={parseResult}
-                        onPickFile={onPickFile}
-                        fileInputRef={fileInputRef}
-                        onFile={onFile}
-                    />
-                )}
-
-                {stage === "saving" && <SavingStage />}
-
-                {stage === "done" && <DoneStage count={importedCount} />}
-
-                {stage === "error" && (
-                    <ErrorStage
-                        result={parseResult}
-                        serverError={serverError}
-                        onPickFile={onPickFile}
-                        fileInputRef={fileInputRef}
-                        onFile={onFile}
-                    />
+                {!isPaid ? (
+                    <FreePaywallStage />
+                ) : (
+                    <>
+                        {stage === "idle" && (
+                            <IdleStage onPickFile={onPickFile} fileInputRef={fileInputRef} onFile={onFile} />
+                        )}
+                        {stage === "parsed" && parseResult && (
+                            <ParsedStage
+                                result={parseResult}
+                                onPickFile={onPickFile}
+                                fileInputRef={fileInputRef}
+                                onFile={onFile}
+                            />
+                        )}
+                        {stage === "saving" && <SavingStage />}
+                        {stage === "done" && <DoneStage count={importedCount} />}
+                        {stage === "error" && (
+                            <ErrorStage
+                                result={parseResult}
+                                serverError={serverError}
+                                onPickFile={onPickFile}
+                                fileInputRef={fileInputRef}
+                                onFile={onFile}
+                            />
+                        )}
+                    </>
                 )}
             </div>
 
             {/* Footer */}
             <div className="px-5 py-4 border-t border-[var(--color-border-soft)] flex items-center justify-between gap-2">
-                {/* Secondary: export */}
+                {/* Secondary: export — always free */}
                 <button
                     type="button"
                     onClick={() => exportTradesToCSV(trades)}
@@ -151,7 +158,14 @@ export function CSVModal({ open, onClose, trades }: CSVModalProps) {
                 </button>
 
                 <div className="flex gap-2">
-                    {stage === "parsed" && parseResult && parseResult.rows.length > 0 ? (
+                    {!isPaid ? (
+                        <>
+                            <Button variant="ghost" onClick={onClose}>Close</Button>
+                            <Link href="/settings">
+                                <Button>Upgrade to Pro</Button>
+                            </Link>
+                        </>
+                    ) : stage === "parsed" && parseResult && parseResult.rows.length > 0 ? (
                         <>
                             <Button variant="ghost" onClick={onClose} disabled={pending}>Cancel</Button>
                             <Button onClick={onConfirmImport} disabled={pending}>
@@ -166,6 +180,28 @@ export function CSVModal({ open, onClose, trades }: CSVModalProps) {
                 </div>
             </div>
         </dialog>
+    );
+}
+
+function FreePaywallStage() {
+    return (
+        <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-xl p-4">
+            <ul className="space-y-1.5">
+                <PaywallBullet>Bulk import 100s of trades from your broker&apos;s CSV</PaywallBullet>
+                <PaywallBullet>Validates each row + skips bad ones with clear errors</PaywallBullet>
+                <PaywallBullet>Detects duplicates so re-imports are safe</PaywallBullet>
+                <PaywallBullet>7-day free trial — no charge if you cancel</PaywallBullet>
+            </ul>
+        </div>
+    );
+}
+
+function PaywallBullet({ children }: { children: React.ReactNode }) {
+    return (
+        <li className="flex items-start gap-2 text-sm">
+            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+            <span className="text-[var(--color-text)]">{children}</span>
+        </li>
     );
 }
 

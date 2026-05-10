@@ -5,6 +5,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getUserTier } from "@/features/billing/tier";
+import { FREE_TRADE_LIMIT } from "@/features/billing/limits";
 import type { TradeInput } from "./types";
 
 export interface ActionResult {
@@ -38,6 +40,24 @@ export async function saveTrade(input: TradeInput): Promise<ActionResult> {
     if (!userId) return { ok: false, error: authErr };
 
     const supabase = await createClient();
+
+    // Free-tier trade limit enforcement (only on INSERT — edits always allowed).
+    if (!input.id) {
+        const tier = await getUserTier();
+        if (!tier.isPaid) {
+            const { count } = await supabase
+                .from("trades")
+                .select("id", { count: "exact", head: true })
+                .eq("user_id", userId);
+            if ((count ?? 0) >= FREE_TRADE_LIMIT) {
+                return {
+                    ok: false,
+                    error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro for unlimited.`,
+                };
+            }
+        }
+    }
+
     const row = {
         user_id: userId,
         date: input.date,
@@ -82,12 +102,22 @@ export interface BulkImportResult {
     error?: string;
 }
 
-/** Bulk-insert a batch of validated trades. Used by the CSV importer. */
+/** Bulk-insert a batch of validated trades. Used by the CSV importer. Pro-only. */
 export async function bulkImportTrades(inputs: TradeInput[]): Promise<BulkImportResult> {
     if (!inputs.length) return { ok: false, imported: 0, error: "No trades to import." };
 
     const { userId, error: authErr } = await getUserId();
     if (!userId) return { ok: false, imported: 0, error: authErr };
+
+    // CSV import is a Pro feature.
+    const tier = await getUserTier();
+    if (!tier.isPaid) {
+        return {
+            ok: false,
+            imported: 0,
+            error: "CSV import is a Pro feature. Upgrade to Pro to import trades in bulk.",
+        };
+    }
 
     const supabase = await createClient();
     const rows = inputs.map((t) => ({

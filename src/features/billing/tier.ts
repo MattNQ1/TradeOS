@@ -12,9 +12,13 @@ export interface TierInfo {
     cancelAtPeriodEnd: boolean;
     /** True for any paid tier — convenience for guard checks. */
     isPaid: boolean;
+    /** True if the user is in their Pro free trial. */
+    isTrialing: boolean;
 }
 
-const FREE: TierInfo = { tier: "free", currentPeriodEnd: null, cancelAtPeriodEnd: false, isPaid: false };
+const FREE: TierInfo = {
+    tier: "free", currentPeriodEnd: null, cancelAtPeriodEnd: false, isPaid: false, isTrialing: false,
+};
 
 export async function getUserTier(): Promise<TierInfo> {
     const supabase = await createClient();
@@ -31,7 +35,10 @@ export async function getUserTier(): Promise<TierInfo> {
 
     // Lifetime never expires.
     if (data.tier === "lifetime" && data.status === "active") {
-        return { tier: "lifetime", currentPeriodEnd: null, cancelAtPeriodEnd: false, isPaid: true };
+        return {
+            tier: "lifetime", currentPeriodEnd: null, cancelAtPeriodEnd: false,
+            isPaid: true, isTrialing: false,
+        };
     }
 
     // Pro: active or trialing AND period hasn't ended.
@@ -44,6 +51,7 @@ export async function getUserTier(): Promise<TierInfo> {
                 currentPeriodEnd: periodEnd,
                 cancelAtPeriodEnd: data.cancel_at_period_end,
                 isPaid: true,
+                isTrialing: data.status === "trialing",
             };
         }
     }

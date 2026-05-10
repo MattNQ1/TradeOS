@@ -42,6 +42,7 @@ export function SettingsView({ email, createdAt, emailConfirmed, trades, tierInf
                 tier={tierInfo.tier}
                 cancelAtPeriodEnd={tierInfo.cancelAtPeriodEnd}
                 currentPeriodEnd={tierInfo.currentPeriodEnd}
+                isTrialing={tierInfo.isTrialing}
             />
 
             <DataSection trades={trades} />

@@ -19,3 +19,13 @@ export async function fetchTrades(): Promise<Trade[]> {
     }
     return (data ?? []) as Trade[];
 }
+
+/** Count-only query — fast, no payload. Used for quota checks. */
+export async function countTrades(userId: string): Promise<number> {
+    const supabase = await createClient();
+    const { count } = await supabase
+        .from("trades")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId);
+    return count ?? 0;
+}

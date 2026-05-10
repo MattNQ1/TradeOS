@@ -4,6 +4,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getUserTier } from "@/features/billing/tier";
 
 export interface ConfigInput {
     preset: string;
@@ -23,6 +24,18 @@ export async function savePropFirmConfig(input: ConfigInput): Promise<ActionResu
     const supabase = await createClient();
     const { data: { user }, error: authErr } = await supabase.auth.getUser();
     if (authErr || !user) return { ok: false, error: "Not signed in." };
+
+    // Custom prop firm rules are Pro-only. Free users can pick from the 15 presets
+    // but can't define their own.
+    if (input.preset === "custom") {
+        const tier = await getUserTier();
+        if (!tier.isPaid) {
+            return {
+                ok: false,
+                error: "Custom prop firm rules are a Pro feature. Upgrade to Pro to define your own.",
+            };
+        }
+    }
 
     // Sanitize numeric fields (don't trust client floats).
     const safeNumber = (n: number) => (Number.isFinite(n) && n >= 0 ? n : 0);
