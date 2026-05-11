@@ -3,6 +3,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { PhoneFrame } from "@/components/landing/phone-frame";
+import {
+    MockDashboard,
+    MockCalculator,
+    MockJournal,
+    MockPropFirm,
+    MockEconomicCalendar,
+} from "@/components/landing/mock-screens";
 
 export const metadata = {
     title: "TradeOS — The trading toolkit for prop firm traders",
@@ -20,6 +28,7 @@ export default async function Home() {
         <div className="bg-[var(--color-bg)]">
             <Header />
             <Hero />
+            <ScreenshotGallery />
             <Features />
             <Pricing />
             <FAQ />
@@ -73,41 +82,118 @@ function Header() {
 function Hero() {
     return (
         <section className="relative overflow-hidden">
-            {/* Subtle gradient backdrop */}
+            {/* Backdrop: emerald top-glow + radial accent behind the phone */}
             <div className="absolute inset-0 bg-gradient-to-b from-emerald-600/10 via-transparent to-transparent pointer-events-none" />
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent" />
+            <div className="absolute right-[-10%] top-[20%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.18),transparent_60%)] pointer-events-none" />
 
-            <div className="relative max-w-3xl mx-auto px-5 py-20 md:py-28 text-center flex flex-col items-center gap-6">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
-                    7-day free trial · no charge to start
-                </span>
+            <div className="relative max-w-6xl mx-auto px-5 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-8 items-center">
+                {/* Left: copy + CTAs */}
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
+                        7-day free trial · no charge to start
+                    </span>
 
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
-                    The trading toolkit built for{" "}
-                    <span className="text-[var(--color-accent)]">prop firm traders</span>
-                </h1>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
+                        The trading toolkit built for{" "}
+                        <span className="text-[var(--color-accent)]">prop firm traders</span>
+                    </h1>
 
-                <p className="text-base md:text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
-                    Position sizing, trade journal, drawdown tracking, and analytics — purpose-built for Topstep, Apex, MyFundedFutures, and FTMO accounts.
-                </p>
+                    <p className="text-base md:text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+                        Position sizing, trade journal, drawdown tracking, and analytics — purpose-built for Topstep, Apex, MyFundedFutures, and FTMO accounts.
+                    </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 mt-2 w-full sm:w-auto">
-                    <Link href="/signup" className="w-full sm:w-auto">
-                        <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-base font-semibold bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white transition-colors">
-                            Start 7-day free trial
-                        </button>
-                    </Link>
-                    <Link href="#pricing" className="w-full sm:w-auto">
-                        <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-base font-semibold bg-[var(--color-bg-elev-2)] hover:bg-[var(--color-border)] text-[var(--color-text)] border border-[var(--color-border)] transition-colors">
-                            See pricing
-                        </button>
-                    </Link>
+                    <div className="flex flex-col sm:flex-row gap-3 mt-1 w-full sm:w-auto">
+                        <Link href="/signup" className="w-full sm:w-auto">
+                            <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-base font-semibold bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white transition-colors">
+                                Start 7-day free trial
+                            </button>
+                        </Link>
+                        <Link href="#pricing" className="w-full sm:w-auto">
+                            <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-base font-semibold bg-[var(--color-bg-elev-2)] hover:bg-[var(--color-border)] text-[var(--color-text)] border border-[var(--color-border)] transition-colors">
+                                See pricing
+                            </button>
+                        </Link>
+                    </div>
+
+                    <p className="text-xs text-[var(--color-text-subtle)]">
+                        No credit card to browse · Cancel before day 8 to avoid any charge
+                    </p>
                 </div>
 
-                <p className="text-xs text-[var(--color-text-subtle)] mt-2">
-                    No credit card to browse · Cancel before day 8 to avoid any charge
+                {/* Right: hero phone showing the dashboard (with a secondary
+                    phone peeking out from behind for App-Store-listing depth) */}
+                <div className="relative flex justify-center lg:justify-end items-center min-h-[520px] lg:min-h-[640px]">
+                    {/* Back phone — calculator screen, peeking from behind */}
+                    <div className="absolute right-1/2 lg:right-auto lg:-left-12 translate-x-[80px] lg:translate-x-0 top-8 lg:top-12 hidden sm:block">
+                        <PhoneFrame size="sm" tilt={-8} className="opacity-90">
+                            <MockCalculator />
+                        </PhoneFrame>
+                    </div>
+
+                    {/* Front phone — dashboard */}
+                    <div className="relative z-10">
+                        <PhoneFrame size="md" tilt={4}>
+                            <MockDashboard />
+                        </PhoneFrame>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ============================================================
+// Screenshot gallery — 3 phones at angles, each showing a feature
+// ============================================================
+
+function ScreenshotGallery() {
+    return (
+        <section className="relative overflow-hidden py-16 md:py-20 border-t border-[var(--color-border-soft)]">
+            <div className="max-w-6xl mx-auto px-5 text-center">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
+                    See it in action
                 </p>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                    Built for the way traders actually work
+                </h2>
+                <p className="text-[var(--color-text-muted)] mt-4 max-w-xl mx-auto">
+                    Three taps to plan a trade. One to log it. Drawdown math runs itself.
+                </p>
+            </div>
+
+            {/* Phone row */}
+            <div className="relative max-w-5xl mx-auto mt-10 md:mt-14 px-4 hidden md:flex items-end justify-center gap-2">
+                <div className="relative">
+                    <PhoneFrame size="sm" tilt={-6}>
+                        <MockJournal />
+                    </PhoneFrame>
+                </div>
+                <div className="relative -mb-4 z-10">
+                    <PhoneFrame size="md" tilt={0}>
+                        <MockPropFirm />
+                    </PhoneFrame>
+                </div>
+                <div className="relative">
+                    <PhoneFrame size="sm" tilt={6}>
+                        <MockEconomicCalendar />
+                    </PhoneFrame>
+                </div>
+            </div>
+
+            {/* Mobile fallback — single phone (the prop firm one) */}
+            <div className="md:hidden mt-10 flex justify-center">
+                <PhoneFrame size="md">
+                    <MockPropFirm />
+                </PhoneFrame>
+            </div>
+
+            {/* Labels under phones */}
+            <div className="hidden md:flex max-w-5xl mx-auto mt-8 px-4 justify-around text-center text-xs text-[var(--color-text-muted)]">
+                <span>P&amp;L Journal &amp; Calendar</span>
+                <span className="font-semibold text-[var(--color-text)]">Prop Firm Guardrails</span>
+                <span>Economic Calendar</span>
             </div>
         </section>
     );
