@@ -1,11 +1,12 @@
 // Root layout — wraps every page in the app.
-// Sets up <html> with dark theme, viewport meta, and global CSS.
+// Sets up <html> with dark theme, viewport meta, global CSS, and the help widget.
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { HelpWidget } from "@/components/help/help-widget";
 
 export const metadata: Metadata = {
-    title: "Futures Calculator",
-    description: "Free futures trading calculator with journal, prop firm tools, and economic calendar.",
+    title: "TradeOS — The trading toolkit for prop firm traders",
+    description: "Position sizing, trade journal, drawdown tracking, and analytics — purpose-built for Topstep, Apex, MyFundedFutures, and FTMO accounts.",
 };
 
 export const viewport: Viewport = {
@@ -17,7 +18,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body>{children}</body>
+            <body>
+                {children}
+                <HelpWidget />
+            </body>
         </html>
     );
 }
