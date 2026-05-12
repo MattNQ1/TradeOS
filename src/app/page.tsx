@@ -1,5 +1,9 @@
 // Public landing page (/). Marketing site for non-authenticated visitors.
 // Authenticated users are bounced to /dashboard so they don't re-encounter the pitch.
+//
+// Design references: Linear, Vercel, Hyperliquid. Premium dark fintech aesthetic.
+// Visual depth = layered radial gradients + dot grid + emerald glow on phones.
+// Motion = fade-in-up on hero load + slow float on phones + smooth hover transitions.
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -28,8 +32,8 @@ export default async function Home() {
         <div className="bg-[var(--color-bg)]">
             <Header />
             <Hero />
+            <BuiltForTraders />
             <ScreenshotGallery />
-            <Features />
             <Pricing />
             <FAQ />
             <FinalCTA />
@@ -39,101 +43,128 @@ export default async function Home() {
 }
 
 // ============================================================
-// Header
+// Header — taller, smoother hovers, cleaner spacing
 // ============================================================
 
 function Header() {
     return (
-        <header className="sticky top-0 z-30 bg-[var(--color-bg)]/90 backdrop-blur border-b border-[var(--color-border-soft)]">
-            <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
-                <Link href="/" className="font-bold text-lg flex items-center gap-2">
-                    <span className="text-[var(--color-accent)]">▲</span>
-                    TradeOS
+        <header className="sticky top-0 z-30 bg-[var(--color-bg)]/80 backdrop-blur-md border-b border-[var(--color-border-soft)]">
+            <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+                <Link href="/" className="font-bold text-lg flex items-center gap-2 group">
+                    <span className="text-[var(--color-accent)] transition-transform group-hover:scale-110">▲</span>
+                    <span className="tracking-tight">TradeOS</span>
                 </Link>
-                <div className="flex items-center gap-1">
+                <nav className="flex items-center gap-1 sm:gap-2">
                     <Link
                         href="#pricing"
-                        className="hidden sm:inline-flex px-3 py-2 rounded-md text-sm font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                        className="hidden sm:inline-flex px-3.5 py-2 rounded-md text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-elev-2)] transition-colors"
                     >
                         Pricing
                     </Link>
                     <Link
+                        href="#faq"
+                        className="hidden md:inline-flex px-3.5 py-2 rounded-md text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-elev-2)] transition-colors"
+                    >
+                        FAQ
+                    </Link>
+                    <Link
                         href="/login"
-                        className="px-3 py-2 rounded-md text-sm font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                        className="px-3.5 py-2 rounded-md text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-elev-2)] transition-colors"
                     >
                         Sign in
                     </Link>
                     <Link
                         href="/signup"
-                        className="px-3.5 py-2 rounded-lg text-sm font-semibold bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white transition-colors"
+                        className="btn-cta-primary inline-flex px-4 py-2 rounded-lg text-sm font-semibold"
                     >
                         Start free trial
                     </Link>
-                </div>
+                </nav>
             </div>
         </header>
     );
 }
 
 // ============================================================
-// Hero
+// Hero — layered gradients, dot grid, fade-in-up, floating phones
 // ============================================================
 
 function Hero() {
     return (
         <section className="relative overflow-hidden">
-            {/* Backdrop: emerald top-glow + radial accent behind the phone */}
-            <div className="absolute inset-0 bg-gradient-to-b from-emerald-600/10 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent" />
-            <div className="absolute right-[-10%] top-[20%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.18),transparent_60%)] pointer-events-none" />
+            {/* Layered backdrop for depth */}
+            <div className="absolute inset-0 bg-grid-dots opacity-50 pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)]/0 via-[var(--color-bg)]/40 to-[var(--color-bg)] pointer-events-none" />
 
-            <div className="relative max-w-6xl mx-auto px-5 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-8 items-center">
+            {/* Emerald aura behind the phones, pulsing softly */}
+            <div
+                aria-hidden
+                className="absolute -right-[15%] top-[10%] w-[700px] h-[700px] rounded-full pointer-events-none animate-pulse-glow"
+                style={{
+                    background:
+                        "radial-gradient(circle, rgba(16,185,129,0.20), transparent 60%)",
+                }}
+            />
+            {/* Secondary violet wash bottom-left */}
+            <div
+                aria-hidden
+                className="absolute -left-[10%] bottom-[10%] w-[500px] h-[500px] rounded-full pointer-events-none opacity-60"
+                style={{
+                    background:
+                        "radial-gradient(circle, rgba(124,58,237,0.15), transparent 60%)",
+                }}
+            />
+
+            <div className="relative max-w-6xl mx-auto px-5 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-8 items-center">
                 {/* Left: copy + CTAs */}
-                <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
-                        7-day free trial · no charge to start
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6">
+                    <span className="animate-fade-in-up inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
+                        Built for prop firm traders
                     </span>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
-                        The trading toolkit built for{" "}
-                        <span className="text-[var(--color-accent)]">prop firm traders</span>
+                    <h1 className="animate-fade-in-up-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
+                        The trading toolkit built to{" "}
+                        <span className="bg-gradient-to-r from-[var(--color-accent)] via-emerald-400 to-emerald-300 bg-clip-text text-transparent">
+                            keep your account alive
+                        </span>
                     </h1>
 
-                    <p className="text-base md:text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+                    <p className="animate-fade-in-up-2 text-base md:text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
                         Position sizing, trade journal, drawdown tracking, and analytics — purpose-built for Topstep, Apex, MyFundedFutures, and FTMO accounts.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-3 mt-1 w-full sm:w-auto">
+                    <div className="animate-fade-in-up-3 flex flex-col sm:flex-row gap-3 mt-1 w-full sm:w-auto">
                         <Link href="/signup" className="w-full sm:w-auto">
-                            <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-base font-semibold bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white transition-colors">
+                            <button className="btn-cta-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-lg text-base font-semibold">
                                 Start 7-day free trial
+                                <span aria-hidden className="inline-block transition-transform group-hover:translate-x-1">→</span>
                             </button>
                         </Link>
                         <Link href="#pricing" className="w-full sm:w-auto">
-                            <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-base font-semibold bg-[var(--color-bg-elev-2)] hover:bg-[var(--color-border)] text-[var(--color-text)] border border-[var(--color-border)] transition-colors">
+                            <button className="btn-cta-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-lg text-base font-semibold">
                                 See pricing
                             </button>
                         </Link>
                     </div>
 
-                    <p className="text-xs text-[var(--color-text-subtle)]">
-                        No credit card to browse · Cancel before day 8 to avoid any charge
+                    <p className="animate-fade-in-up-4 text-xs text-[var(--color-text-subtle)]">
+                        $0 today · $19/mo after trial · Cancel anytime before renewal
                     </p>
                 </div>
 
-                {/* Right: hero phone showing the dashboard (with a secondary
-                    phone peeking out from behind for App-Store-listing depth) */}
+                {/* Right: hero phone pair */}
                 <div className="relative flex justify-center lg:justify-end items-center min-h-[520px] lg:min-h-[640px]">
-                    {/* Back phone — calculator screen, peeking from behind */}
-                    <div className="absolute right-1/2 lg:right-auto lg:-left-12 translate-x-[80px] lg:translate-x-0 top-8 lg:top-12 hidden sm:block">
-                        <PhoneFrame size="sm" tilt={-8} className="opacity-90">
+                    {/* Back phone — calculator, peeking behind */}
+                    <div className="absolute right-1/2 lg:right-auto lg:-left-12 translate-x-[80px] lg:translate-x-0 top-8 lg:top-12 hidden sm:block animate-float-slow-reverse">
+                        <PhoneFrame size="sm" tilt={-8} glow={false}>
                             <MockCalculator />
                         </PhoneFrame>
                     </div>
 
-                    {/* Front phone — dashboard */}
-                    <div className="relative z-10">
+                    {/* Front phone — dashboard, gently floats */}
+                    <div className="relative z-10 animate-float-slow">
                         <PhoneFrame size="md" tilt={4}>
                             <MockDashboard />
                         </PhoneFrame>
@@ -145,115 +176,148 @@ function Hero() {
 }
 
 // ============================================================
-// Screenshot gallery — 3 phones at angles, each showing a feature
+// Built for futures traders — 6 feature cards
 // ============================================================
 
-function ScreenshotGallery() {
+const TRADER_FEATURES = [
+    {
+        icon: PositionIcon,
+        title: "Position sizing",
+        body: "Risk-based sizing across 8 contracts. Tell us your account % at risk; we tell you the exact contracts to trade.",
+    },
+    {
+        icon: ShieldIcon,
+        title: "Drawdown tracking",
+        body: "Trailing drawdown math runs in real time. Catch violations before they cost you a funded account.",
+    },
+    {
+        icon: JournalIcon,
+        title: "Trade journaling",
+        body: "Log trades in two taps. Auto-flows into stats, equity curve, and the color-coded P&L calendar.",
+    },
+    {
+        icon: CalendarIcon,
+        title: "Economic calendar",
+        body: "Every release this week + next. Plain-English explanations for NFP, CPI, FOMC, GDP, ISM, and more.",
+    },
+    {
+        icon: ChartIcon,
+        title: "Performance analytics",
+        body: "Profit factor, expectancy, win rate by day-of-week, P&L by contract. See your real edge — not vibes.",
+    },
+    {
+        icon: BuildingIcon,
+        title: "Prop firm tools",
+        body: "Topstep, Apex, MyFundedFutures, FTMO presets. Track daily limits + profit targets per firm.",
+    },
+];
+
+function BuiltForTraders() {
     return (
-        <section className="relative overflow-hidden py-16 md:py-20 border-t border-[var(--color-border-soft)]">
-            <div className="max-w-6xl mx-auto px-5 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
-                    See it in action
-                </p>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                    Built for the way traders actually work
-                </h2>
-                <p className="text-[var(--color-text-muted)] mt-4 max-w-xl mx-auto">
-                    Three taps to plan a trade. One to log it. Drawdown math runs itself.
-                </p>
-            </div>
-
-            {/* Phone row */}
-            <div className="relative max-w-5xl mx-auto mt-10 md:mt-14 px-4 hidden md:flex items-end justify-center gap-2">
-                <div className="relative">
-                    <PhoneFrame size="sm" tilt={-6}>
-                        <MockJournal />
-                    </PhoneFrame>
+        <section className="relative py-20 md:py-28 border-t border-[var(--color-border-soft)]">
+            <div className="max-w-6xl mx-auto px-5">
+                <div className="text-center max-w-2xl mx-auto mb-12">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
+                        Built for futures traders
+                    </p>
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                        Everything a serious trader actually needs
+                    </h2>
+                    <p className="text-[var(--color-text-muted)] mt-4">
+                        Stop juggling a calculator app, an Excel journal, a notes app for prop firm rules, and an economic calendar in another tab. TradeOS replaces all of it.
+                    </p>
                 </div>
-                <div className="relative -mb-4 z-10">
-                    <PhoneFrame size="md" tilt={0}>
-                        <MockPropFirm />
-                    </PhoneFrame>
-                </div>
-                <div className="relative">
-                    <PhoneFrame size="sm" tilt={6}>
-                        <MockEconomicCalendar />
-                    </PhoneFrame>
-                </div>
-            </div>
 
-            {/* Mobile fallback — single phone (the prop firm one) */}
-            <div className="md:hidden mt-10 flex justify-center">
-                <PhoneFrame size="md">
-                    <MockPropFirm />
-                </PhoneFrame>
-            </div>
-
-            {/* Labels under phones */}
-            <div className="hidden md:flex max-w-5xl mx-auto mt-8 px-4 justify-around text-center text-xs text-[var(--color-text-muted)]">
-                <span>P&amp;L Journal &amp; Calendar</span>
-                <span className="font-semibold text-[var(--color-text)]">Prop Firm Guardrails</span>
-                <span>Economic Calendar</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {TRADER_FEATURES.map((f, i) => {
+                        const Icon = f.icon;
+                        return (
+                            <div
+                                key={f.title}
+                                className="group relative bg-[var(--color-bg-elev)] border border-[var(--color-border-soft)] rounded-2xl p-6 flex flex-col gap-3 transition-all hover:border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] hover:-translate-y-1 hover:shadow-[0_10px_40px_-12px_rgba(16,185,129,0.3)]"
+                                style={{ transitionDuration: "240ms" }}
+                            >
+                                {/* Hover glow */}
+                                <div
+                                    aria-hidden
+                                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                                    style={{
+                                        background:
+                                            "radial-gradient(circle at top, rgba(16,185,129,0.06), transparent 60%)",
+                                    }}
+                                />
+                                <div className="relative">
+                                    <div className="w-11 h-11 rounded-xl bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] flex items-center justify-center text-[var(--color-accent)] mb-3">
+                                        <Icon />
+                                    </div>
+                                    <h3 className="text-lg font-bold mb-1.5">{f.title}</h3>
+                                    <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">{f.body}</p>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </section>
     );
 }
 
 // ============================================================
-// Features
+// Screenshot gallery — 3 phones at angles
 // ============================================================
 
-const FEATURES = [
-    {
-        icon: "🎯",
-        title: "Position calculator",
-        body: "8 contracts, every tick. Dial in exact $ risk and reward before you click buy. Commission-aware. Auto-suggests contracts from account size + risk %.",
-    },
-    {
-        icon: "📓",
-        title: "Auto journal + analytics",
-        body: "Every trade logs to your equity curve. Profit factor, expectancy, win rate by day-of-week, P&L by contract — all the metrics serious traders track.",
-    },
-    {
-        icon: "🛡️",
-        title: "Prop firm guardrails",
-        body: "15 firms preset (Topstep, Apex, MFF, FTMO …). Live trailing drawdown, daily loss limits, profit targets. Catch violations before they cost you a funded account.",
-    },
-    {
-        icon: "📅",
-        title: "Economic calendar",
-        body: "Every release this week + next week, in your timezone. Tap any event for plain-English explanations of NFP, CPI, FOMC, GDP — no more Bloomberg subscriptions.",
-    },
-] as const;
-
-function Features() {
+function ScreenshotGallery() {
     return (
-        <section className="py-20 md:py-24 border-t border-[var(--color-border-soft)]">
-            <div className="max-w-5xl mx-auto px-5">
-                <div className="text-center max-w-2xl mx-auto mb-12">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
-                        Everything in one place
-                    </p>
-                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        Stop juggling 5 spreadsheets
-                    </h2>
-                    <p className="text-[var(--color-text-muted)] mt-4">
-                        Most traders piece together their workflow from a calculator app, an Excel journal, a notes app for prop firm rules, and an economic calendar in another tab. TradeOS replaces all of it.
-                    </p>
-                </div>
+        <section className="relative overflow-hidden py-20 md:py-28 border-t border-[var(--color-border-soft)]">
+            {/* Subtle backdrop */}
+            <div className="absolute inset-0 bg-grid-dots opacity-30 pointer-events-none" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {FEATURES.map((f) => (
-                        <div
-                            key={f.title}
-                            className="bg-[var(--color-bg-elev)] border border-[var(--color-border-soft)] rounded-2xl p-6 flex flex-col gap-3"
-                        >
-                            <div className="text-4xl leading-none">{f.icon}</div>
-                            <h3 className="text-lg font-bold">{f.title}</h3>
-                            <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">{f.body}</p>
-                        </div>
-                    ))}
+            <div className="relative max-w-6xl mx-auto px-5 text-center">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
+                    See it in action
+                </p>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                    The way trading software{" "}
+                    <span className="bg-gradient-to-r from-[var(--color-accent)] to-emerald-300 bg-clip-text text-transparent">
+                        should
+                    </span>{" "}
+                    look
+                </h2>
+                <p className="text-[var(--color-text-muted)] mt-4 max-w-xl mx-auto">
+                    Three taps to plan a trade. One to log it. Drawdown math runs itself.
+                </p>
+            </div>
+
+            {/* Phone row — desktop */}
+            <div className="relative max-w-5xl mx-auto mt-12 md:mt-16 px-4 hidden md:flex items-end justify-center gap-2">
+                <div className="animate-float-slow">
+                    <PhoneFrame size="sm" tilt={-6} glow={false}>
+                        <MockJournal />
+                    </PhoneFrame>
                 </div>
+                <div className="-mb-6 z-10 animate-float-slow-reverse">
+                    <PhoneFrame size="md" tilt={0}>
+                        <MockPropFirm />
+                    </PhoneFrame>
+                </div>
+                <div className="animate-float-slow">
+                    <PhoneFrame size="sm" tilt={6} glow={false}>
+                        <MockEconomicCalendar />
+                    </PhoneFrame>
+                </div>
+            </div>
+
+            {/* Mobile fallback */}
+            <div className="md:hidden mt-10 flex justify-center">
+                <PhoneFrame size="md">
+                    <MockPropFirm />
+                </PhoneFrame>
+            </div>
+
+            <div className="hidden md:flex max-w-5xl mx-auto mt-10 px-4 justify-around text-center text-xs text-[var(--color-text-muted)]">
+                <span>P&amp;L Journal &amp; Calendar</span>
+                <span className="font-semibold text-[var(--color-text)]">Prop Firm Guardrails</span>
+                <span>Economic Calendar</span>
             </div>
         </section>
     );
@@ -265,7 +329,7 @@ function Features() {
 
 function Pricing() {
     return (
-        <section id="pricing" className="py-20 md:py-24 border-t border-[var(--color-border-soft)]">
+        <section id="pricing" className="relative py-20 md:py-28 border-t border-[var(--color-border-soft)]">
             <div className="max-w-5xl mx-auto px-5">
                 <div className="text-center max-w-2xl mx-auto mb-12">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
@@ -302,9 +366,9 @@ function Pricing() {
                         badge="Most popular"
                         price="$19"
                         priceSuffix="/mo"
-                        description="The full toolkit. 7-day free trial, no card charged until day 8."
+                        description="The full toolkit. 7-day free trial, $19/mo after — cancel anytime before renewal."
                         features={[
-                            "7-day free trial — no charge to start",
+                            "7-day free trial",
                             "Unlimited trades + history",
                             "Full economic calendar with explanations",
                             "Custom prop firm rules",
@@ -362,10 +426,10 @@ function PricingCard({
 }: PricingCardProps) {
     const accentColor = accent === "warn" ? "var(--color-warn)" : "var(--color-accent)";
     const borderClass = highlighted
-        ? "border-[color-mix(in_oklab,var(--color-accent)_50%,transparent)] shadow-[0_0_40px_rgba(16,185,129,0.15)]"
+        ? "border-[color-mix(in_oklab,var(--color-accent)_50%,transparent)] shadow-[0_0_60px_rgba(16,185,129,0.18)]"
         : "border-[var(--color-border-soft)]";
     const gradientClass = highlighted
-        ? "bg-gradient-to-br from-emerald-600/8 via-violet-700/4 to-transparent"
+        ? "bg-gradient-to-br from-emerald-600/10 via-violet-700/5 to-transparent"
         : accent === "warn"
             ? "bg-gradient-to-br from-amber-600/8 via-orange-700/4 to-transparent"
             : "";
@@ -405,16 +469,18 @@ function PricingCard({
 
             <div className="p-6">
                 <Link href={ctaHref}>
-                    <button
-                        className={`w-full inline-flex items-center justify-center px-4 py-3 rounded-lg text-sm font-semibold transition-colors ${
-                            highlighted
-                                ? "text-white"
-                                : "bg-[var(--color-bg-elev-2)] hover:bg-[var(--color-border)] text-[var(--color-text)] border border-[var(--color-border)]"
-                        }`}
-                        style={highlighted ? { background: accentColor } : undefined}
-                    >
-                        {ctaText}
-                    </button>
+                    {highlighted ? (
+                        <button className="btn-cta-primary w-full inline-flex items-center justify-center px-4 py-3 rounded-lg text-sm font-semibold">
+                            {ctaText}
+                        </button>
+                    ) : (
+                        <button
+                            className="w-full inline-flex items-center justify-center px-4 py-3 rounded-lg text-sm font-semibold bg-[var(--color-bg-elev-2)] hover:bg-[var(--color-border)] text-[var(--color-text)] border border-[var(--color-border)] transition-colors"
+                            style={accent === "warn" ? { borderColor: `color-mix(in oklab, ${accentColor} 40%, transparent)`, color: accentColor } : undefined}
+                        >
+                            {ctaText}
+                        </button>
+                    )}
                 </Link>
             </div>
         </div>
@@ -427,12 +493,12 @@ function PricingCard({
 
 const FAQS = [
     {
-        q: "Will you charge me during the free trial?",
-        a: "No. Stripe holds your card on file so we can convert you automatically on day 8 if you keep going, but $0 is charged during the trial. Cancel anytime before day 8 to avoid any charge.",
+        q: "How does the 7-day free trial work?",
+        a: "You enter your payment method up-front, but $0 is charged for the first 7 days. On day 8, we auto-bill $19/mo unless you cancel before then. You can cancel anytime from Settings → Manage subscription with one click.",
     },
     {
         q: "Can I cancel anytime?",
-        a: "Yes. Cancel from Settings → Manage subscription. Cancellation during the trial = no charge. Cancellation after = your Pro access stays until the end of the period you've already paid for.",
+        a: "Yes. Cancel from Settings → Manage subscription. Cancellation during the trial means no charge. Cancellation after means your Pro access stays until the end of the period you've already paid for, then drops to Free.",
     },
     {
         q: "What brokers do you sync with?",
@@ -448,13 +514,13 @@ const FAQS = [
     },
     {
         q: "Do you have a mobile app?",
-        a: "TradeOS works as a Progressive Web App — install to your iPhone or Android home screen and it behaves like a native app, including offline support. Native iOS/Android apps are on the roadmap for after we hit a critical mass of users.",
+        a: "TradeOS works as a Progressive Web App — install to your iPhone or Android home screen and it behaves like a native app, including offline support. Native iOS/Android apps are on the roadmap.",
     },
 ] as const;
 
 function FAQ() {
     return (
-        <section className="py-20 md:py-24 border-t border-[var(--color-border-soft)]">
+        <section id="faq" className="py-20 md:py-28 border-t border-[var(--color-border-soft)]">
             <div className="max-w-2xl mx-auto px-5">
                 <div className="text-center mb-10">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
@@ -469,7 +535,7 @@ function FAQ() {
                     {FAQS.map((f, i) => (
                         <details
                             key={i}
-                            className="group bg-[var(--color-bg-elev)] border border-[var(--color-border-soft)] rounded-xl"
+                            className="group bg-[var(--color-bg-elev)] border border-[var(--color-border-soft)] rounded-xl hover:border-[color-mix(in_oklab,var(--color-accent)_25%,transparent)] transition-colors"
                         >
                             <summary className="cursor-pointer list-none px-5 py-4 flex items-center justify-between gap-4">
                                 <span className="text-[15px] font-semibold">{f.q}</span>
@@ -494,19 +560,28 @@ function FAQ() {
 
 function FinalCTA() {
     return (
-        <section className="py-20 md:py-24 border-t border-[var(--color-border-soft)]">
-            <div className="max-w-3xl mx-auto px-5">
-                <div className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] bg-gradient-to-br from-emerald-600/15 via-violet-700/10 to-transparent p-10 md:p-14 text-center">
+        <section className="relative py-20 md:py-28 border-t border-[var(--color-border-soft)] overflow-hidden">
+            {/* Backdrop glow */}
+            <div
+                aria-hidden
+                className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto w-[800px] h-[400px] rounded-full pointer-events-none"
+                style={{
+                    background:
+                        "radial-gradient(closest-side, rgba(16,185,129,0.15), transparent 70%)",
+                }}
+            />
+            <div className="relative max-w-3xl mx-auto px-5">
+                <div className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] bg-gradient-to-br from-emerald-600/10 via-violet-700/5 to-transparent p-10 md:p-14 text-center">
                     <div className="absolute -right-8 -top-8 text-[200px] leading-none opacity-5 select-none pointer-events-none">▲</div>
                     <div className="relative flex flex-col items-center gap-5">
                         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
                             Start tracking better trades today
                         </h2>
                         <p className="text-[var(--color-text-muted)] max-w-md">
-                            Free to start. 7-day Pro trial included. Cancel anytime.
+                            7-day free trial. $19/mo after — cancel anytime before renewal.
                         </p>
                         <Link href="/signup" className="w-full sm:w-auto">
-                            <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-base font-semibold bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white transition-colors">
+                            <button className="btn-cta-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-base font-semibold">
                                 Start your free trial →
                             </button>
                         </Link>
@@ -534,12 +609,79 @@ function Footer() {
                     <span className="text-xs text-[var(--color-text-subtle)] ml-1">v0.1.0</span>
                 </div>
                 <div className="flex items-center gap-5 text-xs">
-                    <Link href="/login" className="hover:text-[var(--color-text)]">Sign in</Link>
-                    <Link href="/signup" className="hover:text-[var(--color-text)]">Get started</Link>
-                    <Link href="/privacy" className="hover:text-[var(--color-text)]">Privacy</Link>
-                    <Link href="/terms" className="hover:text-[var(--color-text)]">Terms</Link>
+                    <Link href="/login" className="hover:text-[var(--color-text)] transition-colors">Sign in</Link>
+                    <Link href="/signup" className="hover:text-[var(--color-text)] transition-colors">Get started</Link>
+                    <Link href="/privacy" className="hover:text-[var(--color-text)] transition-colors">Privacy</Link>
+                    <Link href="/terms" className="hover:text-[var(--color-text)] transition-colors">Terms</Link>
                 </div>
             </div>
         </footer>
+    );
+}
+
+// ============================================================
+// Inline SVG icons (Lucide-style, kept inline to avoid an extra dep)
+// ============================================================
+
+function PositionIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+        </svg>
+    );
+}
+
+function ShieldIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+    );
+}
+
+function JournalIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+    );
+}
+
+function CalendarIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+    );
+}
+
+function ChartIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+            <line x1="3" y1="20" x2="21" y2="20" />
+        </svg>
+    );
+}
+
+function BuildingIcon() {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 21h18" />
+            <path d="M5 21V7l8-4v18" />
+            <path d="M19 21V11l-6-4" />
+            <path d="M9 9v.01" />
+            <path d="M9 12v.01" />
+            <path d="M9 15v.01" />
+            <path d="M9 18v.01" />
+        </svg>
     );
 }
