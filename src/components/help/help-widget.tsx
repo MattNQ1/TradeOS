@@ -69,7 +69,7 @@ const QA: ReadonlyArray<QAEntry> = [
     {
         q: "Still need help?",
         chip: "Contact support",
-        a: "Email support@tradeos.app and we'll get back to you within a day. Include the email on your account so we can find your subscription quickly.",
+        a: "Email tradeos.support@gmail.com and we'll get back to you within a day. Include the email on your account so we can find your subscription quickly.",
     },
 ];
 

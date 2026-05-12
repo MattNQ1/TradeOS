@@ -85,7 +85,7 @@ export default function TermsPage() {
             </p>
 
             <h2>13. Contact</h2>
-            <p>Questions about these Terms? Reach out at <a href="mailto:support@tradeos.app">support@tradeos.app</a>.</p>
+            <p>Questions about these Terms? Reach out at <a href="mailto:tradeos.support@gmail.com">tradeos.support@gmail.com</a>.</p>
         </LegalPage>
     );
 }

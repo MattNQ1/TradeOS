@@ -69,7 +69,7 @@ export default function PrivacyPage() {
             <p>We may update this Privacy Policy from time to time. The &ldquo;Last updated&rdquo; date above will reflect any changes. Material changes will be communicated via email when feasible.</p>
 
             <h2>9. Contact</h2>
-            <p>Questions about this policy or your data? Reach out at <a href="mailto:support@tradeos.app">support@tradeos.app</a>.</p>
+            <p>Questions about this policy or your data? Reach out at <a href="mailto:tradeos.support@gmail.com">tradeos.support@gmail.com</a>.</p>
         </LegalPage>
     );
 }
