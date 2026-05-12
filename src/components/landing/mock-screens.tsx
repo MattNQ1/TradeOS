@@ -217,7 +217,7 @@ export function MockJournal() {
                         {CAL_CELLS.map((c, i) => (
                             <div
                                 key={i}
-                                className={`aspect-square rounded text-[7px] flex flex-col items-center justify-between p-0.5 ${
+                                className={`aspect-square rounded flex flex-col items-stretch justify-between px-0.5 py-0.5 overflow-hidden ${
                                     c.kind === "win"
                                         ? "bg-[color-mix(in_oklab,var(--color-gain)_15%,transparent)] border border-[color-mix(in_oklab,var(--color-gain)_30%,transparent)]"
                                         : c.kind === "loss"
@@ -229,9 +229,9 @@ export function MockJournal() {
                                                     : "bg-[var(--color-bg-elev-2)]"
                                 }`}
                             >
-                                <span className="text-[8px] text-[var(--color-text-muted)] self-start">{c.day}</span>
+                                <span className="text-[7px] leading-none text-[var(--color-text-muted)]">{c.day}</span>
                                 {c.pnl && (
-                                    <span className={`text-[7px] font-bold tabular-nums ${c.kind === "win" ? "text-[var(--color-gain)]" : "text-[var(--color-loss)]"}`}>
+                                    <span className={`text-[7px] font-bold tabular-nums whitespace-nowrap leading-none text-right ${c.kind === "win" ? "text-[var(--color-gain)]" : "text-[var(--color-loss)]"}`}>
                                         {c.pnl}
                                     </span>
                                 )}
@@ -267,11 +267,14 @@ export function MockJournal() {
 }
 
 // Calendar cell layout: 35 cells, varied pattern.
+// P&L strings are intentionally compact ("+240" / "-80" / "+1.2K") because the
+// 7-col mini-calendar gives each cell only ~26px — anything longer wraps and
+// looks broken. Color tints + the +/- prefix carry the meaning.
 const CAL_CELLS: Array<{ day?: number; pnl?: string; kind: "win" | "loss" | "neutral" | "today" | "outside" }> = [
     { day: 26, kind: "outside" }, { day: 27, kind: "outside" }, { day: 28, kind: "outside" }, { day: 29, kind: "outside" }, { day: 30, kind: "outside" },
     { day: 1, kind: "neutral" }, { day: 2, kind: "neutral" },
-    { day: 3, pnl: "+$240", kind: "win" }, { day: 4, kind: "neutral" }, { day: 5, pnl: "−$80", kind: "loss" }, { day: 6, pnl: "+$540", kind: "win" }, { day: 7, pnl: "+$1.2K", kind: "win" }, { day: 8, kind: "neutral" }, { day: 9, kind: "neutral" },
-    { day: 10, pnl: "+$320", kind: "win" }, { day: 11, kind: "today" }, { day: 12, kind: "neutral" }, { day: 13, kind: "neutral" }, { day: 14, kind: "neutral" }, { day: 15, kind: "neutral" }, { day: 16, kind: "neutral" },
+    { day: 3, pnl: "+240", kind: "win" }, { day: 4, kind: "neutral" }, { day: 5, pnl: "-80", kind: "loss" }, { day: 6, pnl: "+540", kind: "win" }, { day: 7, pnl: "+1.2K", kind: "win" }, { day: 8, kind: "neutral" }, { day: 9, kind: "neutral" },
+    { day: 10, pnl: "+320", kind: "win" }, { day: 11, kind: "today" }, { day: 12, kind: "neutral" }, { day: 13, kind: "neutral" }, { day: 14, kind: "neutral" }, { day: 15, kind: "neutral" }, { day: 16, kind: "neutral" },
     { day: 17, kind: "neutral" }, { day: 18, kind: "neutral" }, { day: 19, kind: "neutral" }, { day: 20, kind: "neutral" }, { day: 21, kind: "neutral" }, { day: 22, kind: "neutral" }, { day: 23, kind: "neutral" },
     { day: 24, kind: "neutral" }, { day: 25, kind: "neutral" }, { day: 26, kind: "neutral" }, { day: 27, kind: "neutral" }, { day: 28, kind: "neutral" }, { day: 29, kind: "neutral" }, { day: 30, kind: "neutral" },
 ];
