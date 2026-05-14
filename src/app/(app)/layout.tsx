@@ -36,10 +36,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
             {/* Bottom tab bar */}
             <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[var(--color-bg)]/90 backdrop-blur border-t border-[var(--color-border-soft)]">
-                <div className="max-w-md mx-auto grid grid-cols-5">
+                <div className="max-w-md mx-auto grid grid-cols-6">
                     <NavTabLink href="/dashboard">Home</NavTabLink>
                     <NavTabLink href="/calculator">Calc</NavTabLink>
                     <NavTabLink href="/journal">Journal</NavTabLink>
+                    <NavTabLink href="/coach">Coach</NavTabLink>
                     <NavTabLink href="/prop-firm">Prop</NavTabLink>
                     <NavTabLink href="/economic-calendar">Econ</NavTabLink>
                 </div>

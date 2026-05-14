@@ -1,22 +1,15 @@
-// /journal — Server Component fetches trades + tier + latest AI insight in parallel.
+// /journal — Server Component fetches trades + tier.
+// (AI insights moved to /coach.)
 import { fetchTrades } from "@/features/journal/server";
 import { getUserTier } from "@/features/billing/tier";
-import { fetchLatestInsight } from "@/features/ai-insights/server";
 import { JournalView } from "@/features/journal/journal-view";
 
 export const dynamic = "force-dynamic";
 
 export default async function JournalPage() {
-    const [trades, tierInfo, latestInsight] = await Promise.all([
+    const [trades, tierInfo] = await Promise.all([
         fetchTrades(),
         getUserTier(),
-        fetchLatestInsight(),
     ]);
-    return (
-        <JournalView
-            initialTrades={trades}
-            isPaid={tierInfo.isPaid}
-            latestInsight={latestInsight}
-        />
-    );
+    return <JournalView initialTrades={trades} isPaid={tierInfo.isPaid} />;
 }

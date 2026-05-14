@@ -9,8 +9,6 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FREE_TRADE_LIMIT, FREE_TRADE_WARNING_THRESHOLD } from "@/features/billing/limits";
 import { UpgradePrompt } from "@/features/billing/upgrade-prompt";
-import { InsightsSection } from "@/features/ai-insights/insights-section";
-import type { JournalInsight } from "@/features/ai-insights/types";
 import { JournalStatsCard } from "./journal-stats";
 import { PnLCalendar } from "./pnl-calendar";
 import { TradeList } from "./trade-list";
@@ -22,10 +20,9 @@ import type { Trade } from "./types";
 interface JournalViewProps {
     initialTrades: Trade[];
     isPaid: boolean;
-    latestInsight: JournalInsight | null;
 }
 
-export function JournalView({ initialTrades, isPaid, latestInsight }: JournalViewProps) {
+export function JournalView({ initialTrades, isPaid }: JournalViewProps) {
     const router = useRouter();
     const [tradeModalOpen, setTradeModalOpen] = useState(false);
     const [editing, setEditing] = useState<Trade | null>(null);
@@ -61,12 +58,6 @@ export function JournalView({ initialTrades, isPaid, latestInsight }: JournalVie
             <h1 className="text-2xl font-bold">Journal</h1>
 
             <JournalStatsCard stats={stats} />
-
-            <InsightsSection
-                isPaid={isPaid}
-                latestInsight={latestInsight}
-                tradesCount={initialTrades.length}
-            />
 
             <PnLCalendar trades={initialTrades} />
 
