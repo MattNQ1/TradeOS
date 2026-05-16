@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { fetchTrades } from "@/features/journal/server";
 import { AnalyticsView } from "@/features/analytics/analytics-view";
 
+export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {

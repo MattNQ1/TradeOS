@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardTitle } from "@/components/ui/card";
 import { login } from "./actions";
 
+export const metadata = { title: "Sign in" };
+
 interface LoginPageProps {
     searchParams: Promise<{ error?: string }>;
 }

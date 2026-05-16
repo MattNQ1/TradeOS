@@ -3,7 +3,7 @@
 import { LegalPage } from "@/components/legal-page";
 
 export const metadata = {
-    title: "Privacy Policy · TradeOS",
+    title: "Privacy",
 };
 
 export default function PrivacyPage() {

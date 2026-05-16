@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardTitle } from "@/components/ui/card";
 import { requestPasswordReset } from "./actions";
 
+export const metadata = { title: "Reset password" };
+
 interface ForgotPasswordPageProps {
     searchParams: Promise<{ error?: string; sent?: string }>;
 }

@@ -5,6 +5,7 @@ import { fetchTrades } from "@/features/journal/server";
 import { getUserTier } from "@/features/billing/tier";
 import { PropFirmView } from "@/features/prop-firm/prop-firm-view";
 
+export const metadata = { title: "Prop firm" };
 export const dynamic = "force-dynamic";
 
 export default async function PropFirmPage() {

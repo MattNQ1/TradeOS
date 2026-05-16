@@ -5,6 +5,7 @@ import { fetchTrades } from "@/features/journal/server";
 import { getUserTier } from "@/features/billing/tier";
 import { SettingsView } from "@/features/settings/settings-view";
 
+export const metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
 
 interface SettingsPageProps {

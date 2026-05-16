@@ -4,6 +4,7 @@ import { fetchEconomicEvents } from "@/features/economic-calendar/server";
 import { CalendarView } from "@/features/economic-calendar/calendar-view";
 import { getUserTier } from "@/features/billing/tier";
 
+export const metadata = { title: "Economic calendar" };
 export const dynamic = "force-dynamic";
 
 export default async function EconomicCalendarPage() {

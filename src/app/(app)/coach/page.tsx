@@ -10,6 +10,7 @@ import { fetchTrades } from "@/features/journal/server";
 import { ChecklistCard } from "@/features/checklist/checklist-card";
 import { InsightsSection } from "@/features/ai-insights/insights-section";
 
+export const metadata = { title: "AI" };
 export const dynamic = "force-dynamic";
 
 export default async function CoachPage() {

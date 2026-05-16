@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardTitle } from "@/components/ui/card";
 import { signup } from "./actions";
 
+export const metadata = { title: "Create account" };
+
 interface SignupPageProps {
     searchParams: Promise<{ error?: string; confirm?: string }>;
 }

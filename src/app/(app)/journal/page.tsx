@@ -4,6 +4,7 @@ import { fetchTrades } from "@/features/journal/server";
 import { getUserTier } from "@/features/billing/tier";
 import { JournalView } from "@/features/journal/journal-view";
 
+export const metadata = { title: "Journal" };
 export const dynamic = "force-dynamic";
 
 export default async function JournalPage() {

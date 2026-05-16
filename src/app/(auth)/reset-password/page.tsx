@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardTitle } from "@/components/ui/card";
 import { updatePassword } from "./actions";
 
+export const metadata = { title: "Set new password" };
+
 interface ResetPasswordPageProps {
     searchParams: Promise<{ error?: string }>;
 }
