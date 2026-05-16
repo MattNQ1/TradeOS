@@ -14,6 +14,7 @@ import {
     MockJournal,
     MockPropFirm,
     MockEconomicCalendar,
+    MockDesktopDashboard,
 } from "@/components/landing/mock-screens";
 
 // Metadata for / is inherited from the root layout (so it doesn't get
@@ -413,6 +414,14 @@ function ScreenshotGallery() {
                 <span>P&amp;L Journal &amp; Calendar</span>
                 <span className="font-semibold text-[var(--color-text)]">Prop Firm Guardrails</span>
                 <span>Economic Calendar</span>
+            </div>
+
+            {/* Desktop browser mockup — same app, bigger screen */}
+            <div className="relative max-w-4xl mx-auto mt-16 md:mt-24 px-4">
+                <p className="text-center text-sm text-[var(--color-text-muted)] mb-5">
+                    Also works on your desk &mdash; the same focused mobile column, in a browser.
+                </p>
+                <MockDesktopDashboard />
             </div>
         </section>
     );

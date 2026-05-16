@@ -473,3 +473,149 @@ function EventRow({ time, code, title, impact }: { time: string; code: string; t
         </div>
     );
 }
+
+// ============================================================
+// Desktop dashboard mock — exactly what /dashboard looks like in
+// a desktop browser. Same mobile-width content centered in the
+// viewport, with full-width header + nav bar.
+// ============================================================
+
+export function MockDesktopDashboard() {
+    return (
+        <div className="relative w-full rounded-xl overflow-hidden bg-neutral-900 shadow-[0_40px_100px_-25px_rgba(0,0,0,0.7),0_0_50px_-10px_rgba(16,185,129,0.18),0_0_0_1px_rgba(255,255,255,0.06)_inset]">
+            {/* Browser chrome */}
+            <div className="flex items-center gap-3 px-3.5 py-2.5 border-b border-white/5 bg-neutral-950">
+                <div className="flex gap-1.5">
+                    <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                    <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                    <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+                </div>
+                <div className="flex-1 max-w-md mx-auto">
+                    <div className="bg-neutral-800 rounded-md px-3 py-1 text-[11px] text-neutral-400 font-mono text-center truncate">
+                        usetradeos.vercel.app/dashboard
+                    </div>
+                </div>
+                <div className="w-12 hidden sm:block" />
+            </div>
+
+            {/* App viewport */}
+            <div className="bg-[var(--color-bg)] h-[420px] md:h-[480px] flex flex-col text-[var(--color-text)]">
+                {/* TradeOS top bar — full width, like the real (app) layout */}
+                <div className="flex-shrink-0 border-b border-[var(--color-border-soft)]">
+                    <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="text-[var(--color-accent)] text-lg">▲</span>
+                            <span className="font-bold text-sm">TradeOS</span>
+                        </div>
+                        <div className="w-7 h-7 rounded-md bg-[var(--color-bg-elev-2)] border border-[var(--color-border-soft)] flex items-center justify-center">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-text-muted)]">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Dashboard content — same mobile-width column as the real app */}
+                <div className="flex-1 overflow-hidden">
+                    <div className="max-w-md mx-auto px-4 py-3 flex flex-col gap-2">
+                        <h1 className="text-base font-bold">Dashboard</h1>
+
+                        {/* Hero P&L */}
+                        <MockCard>
+                            <MockCardTitle>Total P&amp;L</MockCardTitle>
+                            <p className="text-2xl font-bold text-[var(--color-gain)] tabular-nums leading-none">+$2,840</p>
+                            <p className="text-[10px] text-[var(--color-text-muted)] mt-1">42 trades · 28 wins · 14 losses</p>
+                        </MockCard>
+
+                        {/* 2x2 metrics */}
+                        <div className="grid grid-cols-2 gap-1.5">
+                            <MockCard>
+                                <MockCardTitle>Win rate</MockCardTitle>
+                                <p className="text-sm font-bold tabular-nums leading-none">67%</p>
+                            </MockCard>
+                            <MockCard>
+                                <MockCardTitle>Profit factor</MockCardTitle>
+                                <p className="text-sm font-bold tabular-nums leading-none">2.34</p>
+                            </MockCard>
+                            <MockCard>
+                                <MockCardTitle>Avg win</MockCardTitle>
+                                <p className="text-sm font-bold text-[var(--color-gain)] tabular-nums leading-none">$152</p>
+                            </MockCard>
+                            <MockCard>
+                                <MockCardTitle>Avg loss</MockCardTitle>
+                                <p className="text-sm font-bold text-[var(--color-loss)] tabular-nums leading-none">−$65</p>
+                            </MockCard>
+                        </div>
+
+                        {/* Equity curve */}
+                        <MockCard>
+                            <div className="flex items-baseline justify-between">
+                                <MockCardTitle>Equity curve</MockCardTitle>
+                                <span className="text-[10px] font-bold text-[var(--color-gain)] tabular-nums">+$2,840</span>
+                            </div>
+                            <svg viewBox="0 0 200 60" preserveAspectRatio="none" className="w-full h-14">
+                                <defs>
+                                    <linearGradient id="mockDesktopEquityFill" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="var(--color-gain)" stopOpacity="0.4" />
+                                        <stop offset="100%" stopColor="var(--color-gain)" stopOpacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                <path
+                                    d="M 0 50 L 18 46 L 32 48 L 48 42 L 62 38 L 78 34 L 92 32 L 108 22 L 122 24 L 138 18 L 154 14 L 172 10 L 200 6"
+                                    fill="none"
+                                    stroke="var(--color-gain)"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M 0 50 L 18 46 L 32 48 L 48 42 L 62 38 L 78 34 L 92 32 L 108 22 L 122 24 L 138 18 L 154 14 L 172 10 L 200 6 L 200 60 L 0 60 Z"
+                                    fill="url(#mockDesktopEquityFill)"
+                                />
+                            </svg>
+                        </MockCard>
+                    </div>
+                </div>
+
+                {/* Bottom nav — full width, 6 tabs centered in max-w-md grid */}
+                <div className="flex-shrink-0 border-t border-[var(--color-border-soft)] bg-[var(--color-bg)]">
+                    <div className="max-w-md mx-auto">
+                        <MockTabBarInline active="home" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Inline variant of the tab bar — not absolutely positioned, since the
+// desktop frame uses flexbox to push the nav to the bottom.
+function MockTabBarInline({ active }: { active: TabId }) {
+    const tabs: Array<{ id: TabId; label: string; icon: React.ReactNode }> = [
+        { id: "home",    label: "Home",    icon: <TinyHomeIcon /> },
+        { id: "calc",    label: "Calc",    icon: <TinyCalcIcon /> },
+        { id: "journal", label: "Journal", icon: <TinyJournalIcon /> },
+        { id: "ai",      label: "AI",      icon: <TinyAIIcon /> },
+        { id: "prop",    label: "Prop",    icon: <TinyShieldIcon /> },
+        { id: "econ",    label: "Econ",    icon: <TinyCalendarIcon /> },
+    ];
+    return (
+        <div className="grid grid-cols-6">
+            {tabs.map((t) => (
+                <div
+                    key={t.id}
+                    className={`flex flex-col items-center justify-center gap-0.5 py-1.5 text-[8px] font-semibold relative ${
+                        t.id === active ? "text-[var(--color-accent)]" : "text-[var(--color-text-subtle)]"
+                    }`}
+                >
+                    {t.id === active && (
+                        <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-5 bg-[var(--color-accent)] rounded-b-full" />
+                    )}
+                    {t.icon}
+                    {t.label}
+                </div>
+            ))}
+        </div>
+    );
+}
