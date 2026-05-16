@@ -200,8 +200,16 @@ and asked Claude to keep polishing. Eleven more commits.
   being double-suffixed by the root template ("X · TradeOS ·
   TradeOS"). Fixed.
 
-Final state: `npm run build` clean. Zero ESLint warnings. 19 commits
-total pushed over the two overnight runs.
+**Security headers** (`3f4b531`)
+- Added baseline security headers to next.config.ts:
+  X-Frame-Options: DENY (no iframe embedding — anti-clickjacking)
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera/mic/geolocation/cohorts all off
+- Skipped CSP for now (needs nonces; not a quick win).
+
+Final state: `npm run build` clean. Zero ESLint warnings. **21 commits
+total pushed over the two overnight runs.**
 
 ### What didn't change
 
