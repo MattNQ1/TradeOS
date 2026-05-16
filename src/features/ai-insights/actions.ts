@@ -115,7 +115,15 @@ Analyze.`;
             config: {
                 systemInstruction,
                 temperature: 0.4, // Lower = more consistent, factual.
-                maxOutputTokens: 1024,
+                // Gemini 2.5 Flash's "thinking" mode eats tokens BEFORE the
+                // actual response — so a low cap truncates the JSON mid-string.
+                // 4096 leaves plenty of headroom for our schema (~600 tokens
+                // worst case) plus any pre-response yapping.
+                maxOutputTokens: 4096,
+                // Structured extraction doesn't benefit from chain-of-thought.
+                // Disabling thinking = faster + every output token goes to the
+                // actual JSON instead of being wasted on reasoning.
+                thinkingConfig: { thinkingBudget: 0 },
                 responseMimeType: "application/json",
                 responseSchema: INSIGHT_SCHEMA,
             },
@@ -126,10 +134,39 @@ Analyze.`;
 
         const text = response.text;
         if (!text) {
-            return { ok: false, error: "AI returned an empty response." };
+            return { ok: false, error: "The AI returned an empty response. Try again in a sec." };
         }
 
-        payload = JSON.parse(text) as InsightPayload;
+        // Surface a clearer error if Gemini hit the output cap mid-response —
+        // otherwise the user sees a raw "Unterminated string" parse error.
+        const finishReason = response.candidates?.[0]?.finishReason;
+        if (finishReason === "MAX_TOKENS") {
+            console.error(
+                "Gemini truncated at MAX_TOKENS. text preview:",
+                text.slice(0, 200),
+            );
+            return {
+                ok: false,
+                error: "The analysis ran past the length limit. Try again — usually works on retry.",
+            };
+        }
+
+        try {
+            payload = JSON.parse(text) as InsightPayload;
+        } catch (parseErr) {
+            console.error(
+                "Gemini returned malformed JSON. finishReason=",
+                finishReason,
+                "raw text:",
+                text.slice(0, 500),
+                "parse error:",
+                parseErr,
+            );
+            return {
+                ok: false,
+                error: "The AI's response didn't parse cleanly. Try again in a sec.",
+            };
+        }
 
         // Defensive: ensure required fields exist as the right type.
         if (!Array.isArray(payload.patterns)) payload.patterns = [];
