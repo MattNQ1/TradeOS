@@ -16,11 +16,8 @@ import {
     MockEconomicCalendar,
 } from "@/components/landing/mock-screens";
 
-export const metadata = {
-    title: "TradeOS — Built by traders, for traders",
-    description:
-        "Position math, a journal that catches your patterns, and drawdown tracked to the dollar. Built for prop firm traders on Topstep, Apex, MFF, and FTMO.",
-};
+// Metadata for / is inherited from the root layout (so it doesn't get
+// the "%s · TradeOS" template suffix and stays clean for the homepage).
 
 export default async function Home() {
     // Bounce signed-in users straight to their dashboard.
