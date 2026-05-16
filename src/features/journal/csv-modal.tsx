@@ -227,7 +227,6 @@ function FilePickerArea({ onPickFile, fileInputRef, onFile }: FilePickerProps) {
             }}
             className="border-2 border-dashed border-[var(--color-border)] rounded-xl px-4 py-8 text-center cursor-pointer hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-elev-2)] transition-colors"
         >
-            <div className="text-3xl mb-2">📄</div>
             <p className="text-sm font-semibold text-[var(--color-text)]">Drop a CSV here, or tap to choose</p>
             <p className="text-xs text-[var(--color-text-muted)] mt-1">.csv files only</p>
             <input
@@ -311,12 +310,11 @@ function SavingStage() {
 function DoneStage({ count }: { count: number }) {
     return (
         <div className="text-center py-6">
-            <div className="text-4xl mb-2">✅</div>
             <p className="text-base font-bold text-[var(--color-gain)]">
-                Imported {count} trade{count === 1 ? "" : "s"}
+                {count} trade{count === 1 ? "" : "s"} imported.
             </p>
             <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                Your journal, calendar, and analytics now reflect these trades.
+                Journal, calendar, and analytics are caught up.
             </p>
         </div>
     );
