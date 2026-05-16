@@ -85,7 +85,7 @@ interface Message {
 const WELCOME_MESSAGES: Message[] = [
     {
         role: "assistant",
-        text: "Hi! 👋 I'm the TradeOS helper. Tap a question below and I'll answer instantly — or scroll for more options.",
+        text: "Got a question? Tap one below for a quick answer. Real answers, written by us, no AI guessing.",
     },
 ];
 
@@ -175,10 +175,10 @@ export function HelpWidget() {
                     className="animate-fade-in-up max-w-[260px] text-left bg-[var(--color-bg-elev)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] rounded-2xl rounded-br-md px-3.5 py-2.5 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] hover:bg-[var(--color-bg-elev-2)] transition-colors"
                 >
                     <p className="text-xs font-semibold text-[var(--color-text)] leading-snug">
-                        👋 Questions about TradeOS?
+                        Questions about TradeOS?
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)] leading-snug mt-0.5">
-                        Tap to ask — answers instantly.
+                        Tap for a real answer.
                     </p>
                 </button>
             )}
@@ -199,9 +199,8 @@ export function HelpWidget() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold leading-tight">TradeOS Helper</p>
-                                    <p className="text-[10px] text-[var(--color-text-muted)] leading-tight flex items-center gap-1 mt-0.5">
-                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-gain)] animate-pulse" />
-                                        Online · Replies instantly
+                                    <p className="text-[10px] text-[var(--color-text-muted)] leading-tight mt-0.5">
+                                        Hand-written answers, no chatbot
                                     </p>
                                 </div>
                             </div>

@@ -27,8 +27,7 @@ export default async function CoachPage() {
                         Coach
                     </h1>
                     <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                        AI pattern analysis + pre-trade discipline tools.
-                        <span className="block sm:inline sm:ml-1">Find your edge, lock in your rules.</span>
+                        Find your patterns. Run the checklist. Don&rsquo;t tilt.
                     </p>
                 </div>
                 {!tier.isPaid && (

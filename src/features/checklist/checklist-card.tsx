@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UpgradePrompt } from "@/features/billing/upgrade-prompt";
 import {
     addChecklistItem,
     deleteChecklistItem,
@@ -119,13 +118,13 @@ export function ChecklistCard({ items, isPaid }: ChecklistCardProps) {
                     </span>
                 </div>
                 <p className="text-sm text-[var(--color-text-muted)] -mt-1">
-                    Lock in your rules. Tap through your own checklist before every click — the 5-second pause between FOMO and buy that saves accounts.
+                    Tap through your own list before every click. The 5-second pause between FOMO and buy that saves accounts.
                 </p>
                 <div className="flex flex-col gap-1.5 mt-1">
                     {[
-                        "Custom checklist tailored to your strategy",
-                        "Visual 'safe to trade' confirmation when all checks pass",
-                        "Resets between trades so discipline stays sharp",
+                        "Your checklist, your rules",
+                        "Green 'safe to trade' banner when every box is ticked",
+                        "Resets between trades so the ritual stays sharp",
                     ].map((f, i) => (
                         <div key={i} className="flex items-start gap-2 text-sm">
                             <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
@@ -134,7 +133,7 @@ export function ChecklistCard({ items, isPaid }: ChecklistCardProps) {
                     ))}
                 </div>
                 <Link href="/settings">
-                    <Button className="w-full mt-2">Upgrade to Pro</Button>
+                    <Button className="w-full mt-2">Try Pro free</Button>
                 </Link>
             </Card>
         );

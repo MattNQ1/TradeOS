@@ -39,7 +39,7 @@ export function InsightsSection({ isPaid, latestInsight, tradesCount }: Insights
     if (!isPaid) {
         return (
             <Card className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/10 via-violet-700/5 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/12 via-emerald-700/4 to-transparent pointer-events-none" />
                 <div className="relative">
                     <div className="flex items-center gap-2">
                         <CardTitle>AI insights</CardTitle>
@@ -48,14 +48,14 @@ export function InsightsSection({ isPaid, latestInsight, tradesCount }: Insights
                         </span>
                     </div>
                     <p className="text-sm text-[var(--color-text-muted)] -mt-1">
-                        An AI senior trading coach reads your journal and tells you what no one else will — patterns, blind spots, and your strongest edges.
+                        Hand your journal to a senior trading coach. Get back the patterns you can&rsquo;t see, the mistakes you keep making, and the setups that are actually working.
                     </p>
                     <ul className="flex flex-col gap-1.5 mt-2">
                         {[
-                            "Spots patterns you can't see in your own trades",
-                            "Catches emotional mistakes (revenge sizing, FOMO entries)",
-                            "Identifies your strongest setups with stats",
-                            "Compares recent sessions to detect improvements",
+                            "Patterns you can't spot in your own trades",
+                            "Revenge sizing, FOMO entries, tilt — flagged with evidence",
+                            "Your strongest setup, with the stats to prove it",
+                            "Recent sessions compared to your earlier ones",
                         ].map((f, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm">
                                 <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
@@ -64,7 +64,7 @@ export function InsightsSection({ isPaid, latestInsight, tradesCount }: Insights
                         ))}
                     </ul>
                     <Link href="/settings" className="block mt-3">
-                        <Button className="w-full">Upgrade to Pro</Button>
+                        <Button className="w-full">Try Pro free</Button>
                     </Link>
                 </div>
             </Card>
@@ -110,23 +110,21 @@ export function InsightsSection({ isPaid, latestInsight, tradesCount }: Insights
 
             {pending && !error && (
                 <div className="py-6 text-center">
-                    <div className="inline-block text-3xl mb-2 animate-pulse">🧠</div>
                     <p className="text-sm text-[var(--color-text-muted)]">
-                        Reading your trades, finding patterns…
+                        Reading your trades, finding patterns&hellip;
                     </p>
                 </div>
             )}
 
             {!hasInsight && !pending && !error && (
                 <div className="py-4 text-center">
-                    <div className="text-3xl mb-2 opacity-50">✨</div>
                     {tradesCount < 5 ? (
                         <p className="text-sm text-[var(--color-text-muted)]">
-                            Log at least 5 trades to enable AI analysis. You have <span className="font-semibold text-[var(--color-text)]">{tradesCount}</span>.
+                            Log at least 5 trades to enable analysis. You have <span className="font-semibold text-[var(--color-text)]">{tradesCount}</span>.
                         </p>
                     ) : (
                         <p className="text-sm text-[var(--color-text-muted)]">
-                            Tap <strong className="text-[var(--color-text)]">Generate</strong> to get your first AI insight. Takes ~10 seconds.
+                            Tap <strong className="text-[var(--color-text)]">Generate</strong> for your first read. Takes about 10 seconds.
                         </p>
                     )}
                 </div>
@@ -144,7 +142,7 @@ function InsightContent({ insight }: { insight: JournalInsight }) {
         <div className="flex flex-col gap-3">
             {/* Hero summary */}
             {insight.summary && (
-                <div className="bg-gradient-to-br from-emerald-600/10 via-violet-700/5 to-transparent border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] rounded-lg p-3.5">
+                <div className="bg-gradient-to-br from-emerald-600/12 via-emerald-700/4 to-transparent border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] rounded-lg p-3.5">
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-1">
                         Headline
                     </p>

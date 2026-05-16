@@ -41,9 +41,9 @@ export function AnalyticsView({ trades, userEmail }: AnalyticsViewProps) {
                     </p>
                 </div>
                 <Card>
-                    <CardTitle>Your analytics will live here</CardTitle>
+                    <CardTitle>Nothing to show yet</CardTitle>
                     <p className="text-sm text-[var(--color-text-muted)]">
-                        Once you log a few trades in the <strong className="text-[var(--color-text)]">Journal</strong>, this page will show your equity curve, profit factor, win rate, performance by day-of-week and by contract — everything you&apos;d expect from a premium trade analytics dashboard.
+                        Log a few trades in the <strong className="text-[var(--color-text)]">Journal</strong> tab and this page lights up: equity curve, profit factor, win rate by day, P&amp;L by contract. Nothing inflated. Just what the math actually says.
                     </p>
                 </Card>
             </div>

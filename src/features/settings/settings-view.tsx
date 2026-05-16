@@ -26,10 +26,10 @@ export function SettingsView({ email, createdAt, emailConfirmed, trades, tierInf
             {upgradedPlan && (
                 <div className="bg-[color-mix(in_oklab,var(--color-gain)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-gain)_30%,transparent)] rounded-xl p-4 text-sm">
                     <p className="font-bold text-[var(--color-gain)]">
-                        🎉 Welcome to {upgradedPlan === "lifetime" ? "Lifetime" : "Pro"}!
+                        You&rsquo;re in. Welcome to {upgradedPlan === "lifetime" ? "Lifetime" : "Pro"}.
                     </p>
                     <p className="text-[var(--color-text-muted)] mt-1">
-                        Your payment was successful. It can take a few seconds for everything to unlock — refresh if anything still looks gated.
+                        Payment went through. Give it a few seconds, then refresh if anything still looks gated.
                     </p>
                 </div>
             )}

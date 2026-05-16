@@ -13,13 +13,13 @@ interface UpgradePromptProps {
 }
 
 export function UpgradePrompt({
-    title = "Unlock with Pro",
-    description = "This feature is part of TradeOS Pro. Upgrade for the full toolkit — or grab a Lifetime license to never see paywalls again.",
+    title = "This is a Pro feature",
+    description = "Pro unlocks the full toolkit. Lifetime makes it permanent. Take your pick.",
     features,
 }: UpgradePromptProps) {
     return (
         <div className="relative overflow-hidden rounded-2xl border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/15 via-violet-700/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/12 via-emerald-700/4 to-transparent pointer-events-none" />
 
             <div className="relative p-5">
                 <div className="flex items-center gap-2 mb-2">
@@ -47,10 +47,10 @@ export function UpgradePrompt({
 
                 <div className="flex flex-col gap-2 mt-4">
                     <Link href="/settings">
-                        <Button className="w-full">Upgrade to Pro · $19/mo</Button>
+                        <Button className="w-full">Try Pro free · $19/mo after</Button>
                     </Link>
                     <Link href="/settings">
-                        <Button variant="secondary" className="w-full">Lifetime · $199 once</Button>
+                        <Button variant="secondary" className="w-full">Or buy once · $199</Button>
                     </Link>
                 </div>
             </div>
