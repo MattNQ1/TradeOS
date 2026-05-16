@@ -1,17 +1,18 @@
 // AI journal insights — Pro-only, rate-limited Server Action.
 //
-// Cost profile (Claude Haiku 4.5 as of 2026):
-//   ~2,000 input tokens (trades + stats) × $0.25/1M  = $0.0005
-//   ~800 output tokens × $1.25/1M                    = $0.001
-//   ≈ $0.0015 per analysis
+// Powered by Google Gemini 2.5 Flash (free tier: 1500 req/day, 15 req/min).
+// At early-stage TradeOS scale (10–50 Pro users running 1–5 analyses/week each),
+// usage is <0.5% of the free quota — costs $0 indefinitely. Paid tier kicks in
+// only if we hit serious scale, and even then it's ~$0.001 per analysis.
 //
-// Rate limit: 5 analyses per 24h per user. Even at 100 power users
-// running max daily, monthly cost = ~$22.50. Negligible.
+// Rate limit: 5 analyses per 24h per user (independent of the Gemini quota,
+// just to prevent any one user from monopolizing or spamming).
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Type, type Schema } from "@google/genai";
 import { createClient } from "@/lib/supabase/server";
-import { anthropic, AI_MODEL } from "@/lib/anthropic";
+import { gemini, AI_MODEL } from "@/lib/gemini";
 import { getUserTier } from "@/features/billing/tier";
 import { fetchTrades } from "@/features/journal/server";
 import { tradePnL, tradeRMultiple } from "@/features/journal/trade-stats";
@@ -26,6 +27,22 @@ export interface GenerateResult {
 const RATE_LIMIT_PER_DAY = 5;
 const MIN_TRADES_REQUIRED = 5;
 const MAX_TRADES_TO_ANALYZE = 100;
+
+// Strict JSON schema so Gemini's output always parses. No more "AI returned
+// markdown fences" failures.
+const INSIGHT_SCHEMA: Schema = {
+    type: Type.OBJECT,
+    properties: {
+        summary:            { type: Type.STRING },
+        patterns:           { type: Type.ARRAY, items: { type: Type.STRING } },
+        emotional_alerts:   { type: Type.ARRAY, items: { type: Type.STRING } },
+        improvements:       { type: Type.ARRAY, items: { type: Type.STRING } },
+        session_comparison: { type: Type.STRING },
+        strongest_setup:    { type: Type.STRING },
+    },
+    required: ["summary", "patterns", "emotional_alerts", "improvements", "session_comparison", "strongest_setup"],
+    propertyOrdering: ["summary", "patterns", "emotional_alerts", "improvements", "session_comparison", "strongest_setup"],
+};
 
 export async function generateInsight(): Promise<GenerateResult> {
     // ---- Auth + tier gate ----
@@ -63,7 +80,7 @@ export async function generateInsight(): Promise<GenerateResult> {
     const csv = buildTradeCSV(trades);
     const stats = buildStatsSummary(trades);
 
-    const systemPrompt = `You are a senior futures trading coach reviewing one trader's recent trades. Your job is to surface patterns, behavior issues, and edges the trader can't easily see themselves.
+    const systemInstruction = `You are a senior futures trading coach reviewing one trader's recent trades. Your job is to surface patterns, behavior issues, and edges the trader can't easily see themselves.
 
 Rules:
 - Be specific. Reference contract symbols, dollar amounts, day-of-week, win counts. NEVER write generic advice.
@@ -71,15 +88,13 @@ Rules:
 - Use plain English. No jargon unless it's standard (R-multiple, profit factor are OK).
 - Each insight = one tight sentence (max ~25 words). No padding.
 
-Output ONLY valid JSON matching this exact schema, no markdown fences, no preamble:
-{
-  "summary": "one-sentence headline of what stands out most",
-  "patterns": ["2-4 specific patterns. Example: 'You win 78% of MES longs but only 41% of NQ shorts — drop the NQ shorts.'"],
-  "emotional_alerts": ["1-3 behavior issues with evidence. Example: 'After your -\\$340 loss on 5/3, you sized up 3× on the next trade — classic revenge.' Empty array if none."],
-  "improvements": ["1-3 things they're doing better recently. Empty array if none."],
-  "session_comparison": "one sentence comparing recent trades to older ones if both exist, else empty string",
-  "strongest_setup": "the contract + direction combo with the best edge, with stats. Example: 'MES longs on Tuesdays — 8/10 wins, +\\$840 net.'"
-}`;
+Output fields:
+- summary: one-sentence headline of what stands out most
+- patterns: 2-4 specific patterns. Example: "You win 78% of MES longs but only 41% of NQ shorts — drop the NQ shorts."
+- emotional_alerts: 1-3 behavior issues with evidence. Example: "After your -$340 loss on 5/3, you sized up 3× on the next trade — classic revenge." Empty array if none.
+- improvements: 1-3 things they're doing better recently. Empty array if none.
+- session_comparison: one sentence comparing recent trades to older ones if both exist, else empty string.
+- strongest_setup: the contract + direction combo with the best edge, with stats. Example: "MES longs on Tuesdays — 8/10 wins, +$840 net."`;
 
     const userPrompt = `Stats summary:
 ${stats}
@@ -89,29 +104,32 @@ ${csv}
 
 Analyze.`;
 
-    // ---- Call Claude ----
+    // ---- Call Gemini ----
     let payload: InsightPayload;
     let inputTokens = 0;
     let outputTokens = 0;
     try {
-        const res = await anthropic.messages.create({
+        const response = await gemini.models.generateContent({
             model: AI_MODEL,
-            max_tokens: 1024,
-            temperature: 0.4, // Lower = more consistent, factual.
-            system: systemPrompt,
-            messages: [{ role: "user", content: userPrompt }],
+            contents: userPrompt,
+            config: {
+                systemInstruction,
+                temperature: 0.4, // Lower = more consistent, factual.
+                maxOutputTokens: 1024,
+                responseMimeType: "application/json",
+                responseSchema: INSIGHT_SCHEMA,
+            },
         });
 
-        inputTokens = res.usage.input_tokens;
-        outputTokens = res.usage.output_tokens;
+        inputTokens = response.usageMetadata?.promptTokenCount ?? 0;
+        outputTokens = response.usageMetadata?.candidatesTokenCount ?? 0;
 
-        const textBlock = res.content.find((b) => b.type === "text");
-        if (!textBlock || textBlock.type !== "text") {
-            return { ok: false, error: "AI returned an unexpected response shape." };
+        const text = response.text;
+        if (!text) {
+            return { ok: false, error: "AI returned an empty response." };
         }
 
-        const cleaned = textBlock.text.trim().replace(/^```json\s*|\s*```$/g, "");
-        payload = JSON.parse(cleaned) as InsightPayload;
+        payload = JSON.parse(text) as InsightPayload;
 
         // Defensive: ensure required fields exist as the right type.
         if (!Array.isArray(payload.patterns)) payload.patterns = [];
@@ -145,7 +163,7 @@ Analyze.`;
         return { ok: false, error: "Generated, but failed to save: " + error.message };
     }
 
-    revalidatePath("/journal");
+    revalidatePath("/coach");
     return { ok: true };
 }
 
@@ -188,7 +206,6 @@ function buildTradeCSV(trades: TradeForPrompt[]): string {
 
 function buildStatsSummary(trades: TradeForPrompt[]): string {
     let wins = 0;
-    let losses = 0;
     let totalPnL = 0;
     let grossWin = 0;
     let grossLoss = 0;
@@ -199,7 +216,7 @@ function buildStatsSummary(trades: TradeForPrompt[]): string {
         const pnl = tradePnL(t as never);
         totalPnL += pnl;
         if (pnl > 0) { wins++; grossWin += pnl; }
-        else if (pnl < 0) { losses++; grossLoss += Math.abs(pnl); }
+        else if (pnl < 0) { grossLoss += Math.abs(pnl); }
         const cur = byContract.get(t.contract) ?? { count: 0, pnl: 0 };
         cur.count++; cur.pnl += pnl;
         byContract.set(t.contract, cur);
