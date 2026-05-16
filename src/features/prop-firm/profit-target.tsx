@@ -27,7 +27,7 @@ export function ProfitTargetCard({ state }: Props) {
 
 function ProgressBlock({ state }: { state: ProfitTargetState }) {
     const status = state.reached
-        ? "🎉 Profit target reached!"
+        ? "Profit target hit. You're funded."
         : state.current <= 0
             ? "Get into profit to start working the target."
             : `${fmtUSD0.format(state.remaining)} to go.`;

@@ -154,14 +154,13 @@ function InsightContent({ insight }: { insight: JournalInsight }) {
 
             {/* Patterns */}
             {insight.patterns.length > 0 && (
-                <InsightBlock title="Patterns" icon="📈" items={insight.patterns} />
+                <InsightBlock title="Patterns" items={insight.patterns} />
             )}
 
             {/* Emotional alerts */}
             {insight.emotional_alerts.length > 0 && (
                 <InsightBlock
-                    title="Emotional alerts"
-                    icon="⚠️"
+                    title="Watch for"
                     items={insight.emotional_alerts}
                     tone="warn"
                 />
@@ -170,8 +169,7 @@ function InsightContent({ insight }: { insight: JournalInsight }) {
             {/* Improvements */}
             {insight.improvements.length > 0 && (
                 <InsightBlock
-                    title="Improvements"
-                    icon="✨"
+                    title="Doing better"
                     items={insight.improvements}
                     tone="gain"
                 />
@@ -179,12 +177,12 @@ function InsightContent({ insight }: { insight: JournalInsight }) {
 
             {/* Strongest setup — single sentence */}
             {insight.strongest_setup && (
-                <SinglePoint title="Strongest setup" icon="🎯" body={insight.strongest_setup} tone="gain" />
+                <SinglePoint title="Strongest setup" body={insight.strongest_setup} tone="gain" />
             )}
 
             {/* Session comparison — single sentence */}
             {insight.session_comparison && (
-                <SinglePoint title="Recent vs older" icon="📊" body={insight.session_comparison} />
+                <SinglePoint title="Recent vs older" body={insight.session_comparison} />
             )}
 
             {/* Footer hint */}
@@ -197,12 +195,11 @@ function InsightContent({ insight }: { insight: JournalInsight }) {
 
 interface InsightBlockProps {
     title: string;
-    icon: string;
     items: string[];
     tone?: "gain" | "warn";
 }
 
-function InsightBlock({ title, icon, items, tone }: InsightBlockProps) {
+function InsightBlock({ title, items, tone }: InsightBlockProps) {
     const titleColor =
         tone === "warn" ? "text-[var(--color-warn)]" :
         tone === "gain" ? "text-[var(--color-gain)]" :
@@ -211,7 +208,7 @@ function InsightBlock({ title, icon, items, tone }: InsightBlockProps) {
     return (
         <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3.5">
             <p className={`text-[10px] font-semibold uppercase tracking-wider mb-2 ${titleColor}`}>
-                {icon} {title}
+                {title}
             </p>
             <ul className="flex flex-col gap-1.5">
                 {items.map((item, i) => (
@@ -227,17 +224,16 @@ function InsightBlock({ title, icon, items, tone }: InsightBlockProps) {
 
 interface SinglePointProps {
     title: string;
-    icon: string;
     body: string;
     tone?: "gain";
 }
 
-function SinglePoint({ title, icon, body, tone }: SinglePointProps) {
+function SinglePoint({ title, body, tone }: SinglePointProps) {
     const titleColor = tone === "gain" ? "text-[var(--color-gain)]" : "text-[var(--color-accent)]";
     return (
         <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3.5">
             <p className={`text-[10px] font-semibold uppercase tracking-wider mb-1 ${titleColor}`}>
-                {icon} {title}
+                {title}
             </p>
             <p className="text-sm text-[var(--color-text)] leading-relaxed">{body}</p>
         </div>
