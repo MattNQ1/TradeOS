@@ -123,9 +123,17 @@ metadata).
 - Main EventModal hero close-button ✕ also replaced with SVG.
 - TradeList empty state: dropped 📓 emoji, tightened copy.
 
+**Commit 8 — CSV modal final emoji cleanup** (`6cbeb83`)
+- File picker drop zone: dropped 📄 emoji decoration (the dashed
+  border already signals "drop file here")
+- Done stage: dropped ✅ emoji, tightened success copy
+
 Final state: `npm run build` clean. `npm run lint` shows zero
 warnings or errors. All changes are purely cosmetic / copy — zero
 functional changes, zero schema changes, zero env var changes.
+
+10 commits pushed total over the overnight run (8 polish + 1 HANDOFF
+init + 1 HANDOFF update).
 
 ### What didn't change
 
