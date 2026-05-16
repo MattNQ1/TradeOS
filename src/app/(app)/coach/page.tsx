@@ -1,7 +1,8 @@
 // /coach — the Pro feature home: AI journal insights + pre-trade checklist.
 //
-// Pulled out of /calculator and /journal so these features have a dedicated
-// destination that's easy to upsell ("Pro gives you the Coach tab").
+// Route stays at /coach (middleware, revalidate paths point here), but the
+// user-facing tab label is "AI" with a brain icon. The narrative is "Pro
+// gives you the AI tab" — the checklist is a supporting feature on this page.
 import { getUserTier } from "@/features/billing/tier";
 import { fetchChecklistItems } from "@/features/checklist/server";
 import { fetchLatestInsight } from "@/features/ai-insights/server";
