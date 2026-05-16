@@ -14,9 +14,8 @@ export function TradeList({ trades, onEdit }: TradeListProps) {
     if (trades.length === 0) {
         return (
             <div className="text-center py-8 text-sm text-[var(--color-text-muted)]">
-                <div className="text-3xl mb-2 opacity-50">📓</div>
-                <p>No trades logged yet.</p>
-                <p className="mt-1">Tap <strong className="text-[var(--color-text)]">+ Add</strong> to log your first one.</p>
+                <p>Nothing logged yet.</p>
+                <p className="mt-1">Hit <strong className="text-[var(--color-text)]">+ Add trade</strong> when you take your next one.</p>
             </div>
         );
     }
