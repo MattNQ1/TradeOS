@@ -4,8 +4,9 @@ This is the short-lived companion to `CLAUDE.md`. Update it as work
 progresses. When picking up a session, read this *after* `CLAUDE.md` to
 get oriented on what's in flight.
 
-Last meaningful update: **2026-05-16** — moved dev environment from
-MacBook to Dell laptop; switched AI from Anthropic to Gemini.
+Last meaningful update: **2026-05-16** — overnight de-AI polish pass
+across the entire app (landing + all authenticated views + OG
+metadata).
 
 ---
 
@@ -21,10 +22,113 @@ MacBook to Dell laptop; switched AI from Anthropic to Gemini.
   happens via the Claude Desktop app for Windows pointed at the WSL path
   `\\wsl.localhost\Ubuntu\home\matt1\projects\tradeos`. Backup access via
   SSH from iPhone (Tailscale + Termius + tmux) is configured.
+- **Overnight pass (2026-05-16) done:** complete de-AI sweep across
+  landing + every authenticated view. Voice is now anonymous "we",
+  edgy, specific. See "Overnight run summary" below for the full
+  changelog.
 
 ---
 
-## Pending work (do these next)
+## Overnight run summary — 2026-05-16
+
+5 commits pushed while Matt was asleep. Goal: make the site feel
+"human made" instead of AI-generated.
+
+### What changed
+
+**Commit 1 — Landing page rewrite** (`194d779`)
+- Killed gradient text in all headlines (2 instances)
+- Removed pulsing dot badge in hero
+- New hero h1: "The trading toolkit prop firms hope you don't have."
+- New hero subhead, less listy
+- Removed violet wash, removed `animate-pulse-glow` on hero aura
+- **NEW SECTION: "Why we built this"** — anonymous "we" founder voice,
+  3-4 short paragraphs, specific trader pain (Topstep eval auto-fails,
+  spreadsheet juggling)
+- Rewrote 6 feature card bodies (more specific, fewer em dashes)
+- Rewrote section h2s: "What's actually in it", "Made for the device
+  you actually trade from", "Cheaper than one bad trade", "Questions
+  before you commit"
+- Cut 4 of 5 uppercase eyebrow labels
+- Varied CTAs ("Try it free for 7 days", "Try Pro free", "Get
+  TradeOS", "Buy once, done", "Start free")
+- Cut 3 phone-row float animations on the gallery (kept hero ones)
+- New final CTA h2: "Stop blowing up accounts. Start tracking the math."
+- Footer tagline: "Built by prop firm traders, in the gaps between
+  sessions, because nobody else was going to."
+- Tightened FAQ answers (less corporate, dropped Supabase jargon)
+- Fixed unused `i` lint warning in feature card map
+
+**Commit 2 — In-app polish: Coach + auth surfaces** (`d10c97a`)
+- Coach page subtitle rewritten ("Find your patterns. Run the
+  checklist. Don't tilt.")
+- InsightsSection: rewrote Pro pitch copy, removed 🧠 + ✨ emojis,
+  toned down violet → emerald
+- UpgradePrompt: tightened default copy, killed violet wash, varied CTAs
+- ChecklistCard: tighter pitch copy, removed unused UpgradePrompt
+  import (fixes ESLint warning)
+- Analytics empty state: "Your analytics will live here..." →
+  "Nothing to show yet. Log a few trades..."
+- HelpWidget: dropped 👋 emojis, replaced "Online · Replies instantly"
+  with "Hand-written answers, no chatbot"
+- Settings post-upgrade banner: dropped 🎉 emoji
+
+**Commit 3 — In-app polish: Calc/Journal/Prop/Econ** (`2bc0594`)
+- Calculator: "Calculator" h1 → "Position calculator" + subtitle
+- Journal: added subtitle ("Every trade you take. Every pattern you
+  keep missing.")
+- Journal trade-limit paywall: tightened copy
+- Broker-sync modal: dropped 🔌 emoji decoration, replaced ✕ glyph
+  with SVG, demoted uppercase eyebrows to plain paragraphs
+- Prop firm: added subtitle ("Daily limits, drawdown, profit
+  targets — tracked so you don't blow up by accident.")
+- Economic calendar: title case fix, subtitle rewritten, dropped
+  📡/📅 emoji decorations
+- Calendar paywall: rewrote with new voice
+
+**Commit 4 — OG image + favicon + metadata** (`5774132`)
+- **NEW: `src/app/opengraph-image.tsx`** — generated 1200x630 OG card
+  rendered at request time via `next/og`. Dark emerald background,
+  ▲ + TradeOS wordmark, the new headline, the tagline.
+- **NEW: `src/app/icon.tsx`** — 32x32 favicon (emerald ▲ on dark)
+- **NEW: `src/app/apple-icon.tsx`** — 180x180 Apple touch icon for
+  iOS "Add to Home Screen"
+- Root layout metadata: added metadataBase, title template ("%s ·
+  TradeOS"), keywords, openGraph, twitter, robots
+- Removed redundant page-level metadata from `src/app/page.tsx`
+  (handled by root layout now)
+
+**Commit 5 — Settings + CSV modal final polish** (`b8a87a1`)
+- Subscription section: removed floating 🎁 / ⭐ / 🏆 emoji
+  decorations from the active subscription and Lifetime cards
+- Upgrade card copy: varied CTAs ("Try Pro free", "Buy once, done"),
+  reworded feature lines, replaced violet with emerald
+- CSV modal: removed pulsing 📥 emoji, tightened subtitles
+- Data section: dropped "stored on Supabase" jargon for plain wording
+
+### What didn't change
+
+- Functionality, logic, routes, database, env vars, Stripe, Gemini
+  call patterns. Pure copy + visual tweaks only.
+- Auth pages (login/signup/forgot/reset) were reviewed and found
+  clean — no AI tells.
+- The "✓" check / "•" bullet markers are kept (functional, not
+  decorative).
+- Domain-specific labels (Win rate, Profit factor, Trailing
+  drawdown, etc.) are kept verbatim — those are correct trader
+  vocabulary.
+
+### Build verified at each step
+
+`npm run build` ran clean after every batch. Three pre-existing
+ESLint warnings were fixed along the way. No new ones introduced.
+
+---
+
+## Pending work — Matt to do when he wakes up
+
+These are the only things blocking Coach features from working in
+production. Both should take under 5 minutes total.
 
 ### 1. Vercel env var swap — BLOCKING for production AI insights
 
@@ -32,13 +136,15 @@ The Vercel project still has the old `ANTHROPIC_API_KEY` env var and is
 missing `GEMINI_API_KEY`. Until this is fixed, AI insight generation on
 the live site will fail with "GEMINI_API_KEY is not set".
 
-Steps (Matt to do, or Claude to walk him through):
+Steps:
 1. Get a free Gemini API key at https://aistudio.google.com/app/apikey
+   (click "Create API key" → "Create API key in new project" → copy)
 2. Vercel dashboard → TradeOS project → Settings → Environment Variables
 3. **Delete** `ANTHROPIC_API_KEY`
-4. **Add** `GEMINI_API_KEY` with the key from step 1. Scope:
-   Production + Preview + Development.
-5. Redeploy (Deployments → ⋯ → Redeploy on latest, OR push any commit).
+4. **Add** `GEMINI_API_KEY` with the key from step 1. Scope: Production
+   + Preview + Development.
+5. Redeploy: Deployments → ⋯ → Redeploy on latest. (OR just push any
+   commit, that triggers a deploy too.)
 
 ### 2. Supabase migrations 0004 + 0005
 
@@ -54,6 +160,26 @@ Steps:
 
 (If they were already run earlier, the SQL will error harmlessly — both
 migrations use `create table if not exists`.)
+
+### 3. (Optional) Visual review of the new landing page
+
+The de-AI rewrite changed a lot of copy. Open
+https://usetradeos.vercel.app/ once Vercel deploys and skim — flag
+anything that reads wrong, sounds off-brand, or you want toned down.
+Specific things to check:
+- New hero h1: "The trading toolkit prop firms hope you don't have."
+  (slightly conspiratorial — you OK with this framing?)
+- "Why we built this" section claims you've blown up funded accounts.
+  This is the "honest founder" angle. Want to soften?
+- Final CTA: "Stop blowing up accounts. Start tracking the math."
+- New OG card unfurls — paste the URL into iMessage or Twitter to
+  preview how shares look.
+
+### 4. (Optional) Visual review of the Dell setup
+
+If you used the Claude Desktop app to point at the WSL project, run
+`git pull` on the Dell so it picks up all the overnight commits,
+then open a new session and verify everything looks right.
 
 ---
 
