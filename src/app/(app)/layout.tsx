@@ -4,7 +4,15 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { NavTabLink } from "@/components/nav-tab-link";
+import {
+    NavTabLink,
+    HomeIcon,
+    CalcIcon,
+    JournalIcon,
+    CoachIcon,
+    PropIcon,
+    EconIcon,
+} from "@/components/nav-tab-link";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
     const supabase = await createClient();
@@ -34,15 +42,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 {children}
             </main>
 
-            {/* Bottom tab bar */}
-            <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[var(--color-bg)]/90 backdrop-blur border-t border-[var(--color-border-soft)]">
+            {/* Bottom tab bar — icon + label per tab, active-route highlighting */}
+            <nav
+                aria-label="Primary"
+                className="fixed bottom-0 left-0 right-0 z-30 bg-[var(--color-bg)]/95 backdrop-blur border-t border-[var(--color-border-soft)] pb-[env(safe-area-inset-bottom)]"
+            >
                 <div className="max-w-md mx-auto grid grid-cols-6">
-                    <NavTabLink href="/dashboard">Home</NavTabLink>
-                    <NavTabLink href="/calculator">Calc</NavTabLink>
-                    <NavTabLink href="/journal">Journal</NavTabLink>
-                    <NavTabLink href="/coach">Coach</NavTabLink>
-                    <NavTabLink href="/prop-firm">Prop</NavTabLink>
-                    <NavTabLink href="/economic-calendar">Econ</NavTabLink>
+                    <NavTabLink href="/dashboard"          label="Home"    icon={<HomeIcon />} />
+                    <NavTabLink href="/calculator"         label="Calc"    icon={<CalcIcon />} />
+                    <NavTabLink href="/journal"            label="Journal" icon={<JournalIcon />} />
+                    <NavTabLink href="/coach"              label="Coach"   icon={<CoachIcon />} />
+                    <NavTabLink href="/prop-firm"          label="Prop"    icon={<PropIcon />} />
+                    <NavTabLink href="/economic-calendar"  label="Econ"    icon={<EconIcon />} />
                 </div>
             </nav>
         </div>
