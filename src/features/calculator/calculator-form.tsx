@@ -144,7 +144,12 @@ export function CalculatorForm() {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-2xl font-bold">Calculator</h1>
+            <div>
+                <h1 className="text-2xl font-bold">Position calculator</h1>
+                <p className="text-sm text-[var(--color-text-muted)] mt-1">
+                    Tell it the trade. It hands back the number of contracts.
+                </p>
+            </div>
 
             {/* ---------- Trade setup ---------- */}
             <Card>

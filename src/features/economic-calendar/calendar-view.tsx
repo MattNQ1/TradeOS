@@ -66,9 +66,9 @@ export function CalendarView({ events, error, isPaid }: CalendarViewProps) {
         <div className="flex flex-col gap-4">
             <div className="flex items-start justify-between gap-3">
                 <div>
-                    <h1 className="text-2xl font-bold">Economic Calendar</h1>
+                    <h1 className="text-2xl font-bold">Economic calendar</h1>
                     <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                        This week + next week. Times shown in your local timezone.
+                        What&rsquo;s about to move price. Your local timezone.
                     </p>
                 </div>
                 {!isPaid && (
@@ -89,18 +89,16 @@ export function CalendarView({ events, error, isPaid }: CalendarViewProps) {
             {error && events.length === 0 ? (
                 <Card>
                     <div className="text-center py-6">
-                        <div className="text-3xl mb-2 opacity-50">📡</div>
                         <p className="text-sm text-[var(--color-text-muted)]">
-                            Couldn&apos;t load economic events. The data feed may be temporarily down.
+                            Couldn&rsquo;t load economic events. The data feed may be down. Try again in a minute.
                         </p>
                     </div>
                 </Card>
             ) : dayKeys.length === 0 ? (
                 <Card>
                     <div className="text-center py-6">
-                        <div className="text-3xl mb-2 opacity-50">📅</div>
                         <p className="text-sm text-[var(--color-text-muted)]">
-                            No events match your filters.
+                            Nothing matches your filters.
                         </p>
                     </div>
                 </Card>
@@ -129,12 +127,12 @@ export function CalendarView({ events, error, isPaid }: CalendarViewProps) {
 
                     {!isPaid && (
                         <UpgradePrompt
-                            title="Unlock the full economic calendar"
-                            description="Free accounts see only the next 2 events. Upgrade to see every release for this week + next week, plus tap any event for plain-English explanations."
+                            title="Free shows you the next 2 events"
+                            description="Pro shows every release for this week and next. Tap any event for what it is, when it hits, and how it tends to move price."
                             features={[
-                                "Every economic release this week + next week",
-                                "Plain-English explanations for every event (NFP, CPI, FOMC, GDP, ISM, …)",
-                                "How to interpret each release for trading",
+                                "Every release, this week + next",
+                                "What NFP, CPI, FOMC, GDP, ISM actually mean",
+                                "How each release typically moves the tape",
                                 "Live values: forecast, previous, actual",
                             ]}
                         />

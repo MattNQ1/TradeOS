@@ -55,7 +55,12 @@ export function JournalView({ initialTrades, isPaid }: JournalViewProps) {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-2xl font-bold">Journal</h1>
+            <div>
+                <h1 className="text-2xl font-bold">Journal</h1>
+                <p className="text-sm text-[var(--color-text-muted)] mt-1">
+                    Every trade you take. Every pattern you keep missing.
+                </p>
+            </div>
 
             <JournalStatsCard stats={stats} />
 
@@ -100,14 +105,14 @@ export function JournalView({ initialTrades, isPaid }: JournalViewProps) {
             {atLimit && (
                 <div id="trade-limit-paywall">
                     <UpgradePrompt
-                        title={`You've hit the ${FREE_TRADE_LIMIT}-trade Free limit`}
-                        description="Free plan caps your journal at 25 trades. Upgrade to Pro for unlimited history — your existing trades stay safe either way."
+                        title={`${FREE_TRADE_LIMIT}-trade cap hit`}
+                        description="Free accounts max out at 25 trades. Pro gives you unlimited history. Your existing 25 stay right where they are."
                         features={[
                             "Unlimited trades + history",
                             "CSV bulk import",
                             "Custom prop firm rules",
-                            "Full economic calendar with explanations",
-                            "Priority support",
+                            "Full economic calendar with explainers",
+                            "Priority support from real humans",
                         ]}
                     />
                 </div>
@@ -196,17 +201,14 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
             onClose={onClose}
             className="bg-[var(--color-bg-elev)] text-[var(--color-text)] rounded-2xl p-0 w-full max-w-md backdrop:bg-black/60 backdrop:backdrop-blur-sm overflow-hidden"
         >
-            <div className="relative bg-gradient-to-br from-emerald-600/40 via-sky-700/20 to-transparent px-5 pt-6 pb-5 overflow-hidden">
-                <div className="absolute -right-4 -top-4 text-[120px] leading-none opacity-10 select-none pointer-events-none">
-                    🔌
-                </div>
+            <div className="relative bg-gradient-to-br from-emerald-600/30 via-emerald-700/10 to-transparent px-5 pt-6 pb-5 overflow-hidden">
                 <button
                     type="button"
                     onClick={onClose}
                     aria-label="Close"
                     className="absolute right-3 top-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur text-white flex items-center justify-center hover:bg-black/50"
                 >
-                    ✕
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                 </button>
 
                 <div className="relative">
@@ -217,16 +219,16 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
                         Broker &amp; prop firm sync
                     </h2>
                     <p className="text-sm text-[var(--color-text-muted)] mt-2">
-                        Connect your trading account once. Trades flow into your journal automatically — no manual entry, no copy-paste.
+                        Connect your trading account once. Trades flow into your journal as they close. No manual entry. No copy-paste.
                     </p>
                 </div>
             </div>
 
             <div className="px-5 py-5 flex flex-col gap-4">
                 <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
-                        What it&apos;ll do
-                    </h3>
+                    <p className="text-sm font-semibold mb-2 text-[var(--color-text)]">
+                        What it&rsquo;ll do
+                    </p>
                     <ul className="text-sm text-[var(--color-text)] space-y-1.5">
                         <Bullet>Auto-import every trade as it closes</Bullet>
                         <Bullet>Pull real entry/exit prices, contracts, commissions</Bullet>
@@ -236,9 +238,9 @@ function BrokerSyncSoonModal({ open, onClose }: BrokerSyncSoonModalProps) {
                 </div>
 
                 <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
+                    <p className="text-sm font-semibold mb-2 text-[var(--color-text)]">
                         Planned integrations
-                    </h3>
+                    </p>
                     <div className="flex flex-wrap gap-1.5">
                         {[
                             "Topstep", "Apex", "MyFundedFutures",

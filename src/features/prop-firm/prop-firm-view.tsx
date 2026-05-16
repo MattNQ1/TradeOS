@@ -76,7 +76,12 @@ export function PropFirmView({ initialConfig, trades, isPaid }: PropFirmViewProp
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-2xl font-bold">Prop firm</h1>
+            <div>
+                <h1 className="text-2xl font-bold">Prop firm</h1>
+                <p className="text-sm text-[var(--color-text-muted)] mt-1">
+                    Daily limits, drawdown, profit targets &mdash; tracked so you don&rsquo;t blow up by accident.
+                </p>
+            </div>
 
             {/* ---------- Preset selector + rules summary ---------- */}
             <Card>
