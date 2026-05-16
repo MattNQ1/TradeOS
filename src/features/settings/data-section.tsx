@@ -21,7 +21,7 @@ export function DataSection({ trades }: DataSectionProps) {
             <Card>
                 <CardTitle>Your data</CardTitle>
                 <p className="text-sm text-[var(--color-text-muted)] -mt-1">
-                    Everything is stored on Supabase, scoped to your account only. Export anytime.
+                    Your trades live in our database, scoped to your account only. Export them as CSV any time.
                 </p>
 
                 <Button

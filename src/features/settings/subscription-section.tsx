@@ -47,10 +47,9 @@ function FreeView() {
                         </p>
                         <p className="text-lg font-bold mt-0.5">Free</p>
                         <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
-                            Calculator + manual journal. Upgrade for the full toolkit.
+                            Calculator and a starter journal. The rest is behind Pro.
                         </p>
                     </div>
-                    <span className="text-3xl">✦</span>
                 </div>
             </div>
 
@@ -62,16 +61,16 @@ function FreeView() {
                 price="$19"
                 priceSuffix="/mo"
                 features={[
-                    "7-day free trial — cancel anytime, no charge",
+                    "7 days free, then $19/mo. Cancel any time.",
                     "Unlimited trades + history",
                     "CSV bulk import",
-                    "Full economic calendar with explanations",
+                    "Full economic calendar with explainers",
                     "Custom prop firm rules",
-                    "Priority support",
+                    "Priority support from real humans",
                 ]}
                 accentClass="border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)]"
-                gradientClass="from-emerald-600/15 via-violet-700/10 to-transparent"
-                buttonText="Start 7-day free trial"
+                gradientClass="from-emerald-600/15 via-emerald-700/5 to-transparent"
+                buttonText="Try Pro free"
             />
 
             {/* Lifetime — one-time */}
@@ -82,14 +81,14 @@ function FreeView() {
                 price="$199"
                 priceSuffix=" once"
                 features={[
-                    "All Pro features, forever",
-                    "No recurring fees",
-                    "Lifetime updates included",
-                    "Founders pricing — locks in before public launch",
+                    "Pay once. Every Pro feature, permanent.",
+                    "No recurring fees, ever",
+                    "All future updates included",
+                    "Founders pricing — going up at public launch",
                 ]}
                 accentClass="border-[color-mix(in_oklab,var(--color-warn)_40%,transparent)]"
                 gradientClass="from-amber-600/20 via-orange-700/10 to-transparent"
-                buttonText="Get Lifetime"
+                buttonText="Buy once, done"
             />
         </>
     );
@@ -136,9 +135,6 @@ function ProView({
     return (
         <>
             <div className="relative overflow-hidden bg-[var(--color-bg-elev-2)] border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] rounded-xl p-4">
-                <div className="absolute -right-2 -top-2 text-[80px] leading-none opacity-10 select-none pointer-events-none">
-                    {isTrialing ? "🎁" : "⭐"}
-                </div>
                 <div className="relative">
                     <div className="flex items-center gap-2">
                         <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
@@ -183,13 +179,12 @@ function LifetimeView() {
         <div className="relative overflow-hidden rounded-xl border border-[color-mix(in_oklab,var(--color-warn)_40%,transparent)]">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-600/25 via-orange-700/15 to-transparent pointer-events-none" />
             <div className="relative p-5 text-center">
-                <div className="text-5xl mb-2">🏆</div>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-warn)]">
                     Founder
                 </p>
                 <p className="text-xl font-bold mt-1">Lifetime access</p>
                 <p className="text-sm text-[var(--color-text-muted)] mt-2">
-                    All Pro features, forever. No recurring fees, no expirations.
+                    Every Pro feature, permanent. No bills. No expirations.
                 </p>
             </div>
         </div>

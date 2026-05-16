@@ -107,8 +107,8 @@ export function CSVModal({ open, onClose, trades, isPaid }: CSVModalProps) {
                     </h2>
                     <p className="text-sm text-[var(--color-text-muted)] mt-2">
                         {isPaid
-                            ? "Bring in trades from a spreadsheet, your broker's export, or a backup. Your existing trades won't be touched."
-                            : "Free accounts can export — but bulk-importing trades is part of TradeOS Pro. You can still export your current trades below."}
+                            ? "Drop a CSV from a spreadsheet, your broker, or a backup. Your existing trades stay put."
+                            : "Export is free for everyone. Bulk import is a Pro thing. You can still grab your current trades below."}
                     </p>
                 </div>
             </div>
@@ -303,8 +303,7 @@ function ParsedStage({
 function SavingStage() {
     return (
         <div className="text-center py-6">
-            <div className="text-3xl mb-2 animate-pulse">📥</div>
-            <p className="text-sm text-[var(--color-text-muted)]">Saving trades to your journal…</p>
+            <p className="text-sm text-[var(--color-text-muted)]">Writing rows into the journal&hellip;</p>
         </div>
     );
 }
