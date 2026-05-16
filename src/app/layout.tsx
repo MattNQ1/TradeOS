@@ -1,6 +1,7 @@
 // Root layout — wraps every page in the app.
 // Sets up <html> with dark theme, viewport meta, global CSS, and the help widget.
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { HelpWidget } from "@/components/help/help-widget";
 
@@ -60,6 +61,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body>
                 {children}
                 <HelpWidget />
+                {/* Privacy-friendly traffic analytics. No cookies, no personal
+                    data — just aggregate pageviews. Only sends data on Vercel
+                    deployments; no-op in local dev. */}
+                <Analytics />
             </body>
         </html>
     );

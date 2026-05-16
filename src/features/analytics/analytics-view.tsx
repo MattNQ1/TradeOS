@@ -3,7 +3,9 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { Card, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
     calcAdvancedStats,
     calcEquityCurve,
@@ -30,21 +32,43 @@ export function AnalyticsView({ trades, userEmail }: AnalyticsViewProps) {
     const byDirection = useMemo(() => calcPnLByDirection(trades), [trades]);
     const rDist = useMemo(() => calcRMultipleDistribution(trades), [trades]);
 
-    // Empty state
+    // Empty state — first-time user. Give them a clear next step.
     if (trades.length === 0) {
         return (
             <div className="flex flex-col gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold">Dashboard</h1>
+                    <h1 className="text-2xl font-bold">Welcome to TradeOS</h1>
                     <p className="text-sm text-[var(--color-text-muted)] mt-1">
                         Signed in as <span className="text-[var(--color-text)]">{userEmail}</span>
                     </p>
                 </div>
+
                 <Card>
                     <CardTitle>Nothing to show yet</CardTitle>
-                    <p className="text-sm text-[var(--color-text-muted)]">
-                        Log a few trades in the <strong className="text-[var(--color-text)]">Journal</strong> tab and this page lights up: equity curve, profit factor, win rate by day, P&amp;L by contract. Nothing inflated. Just what the math actually says.
+                    <p className="text-sm text-[var(--color-text-muted)] -mt-1">
+                        Log a few trades in the Journal and this page lights up: equity curve, profit factor, win rate by day, P&amp;L by contract. Nothing inflated &mdash; just what the math actually says.
                     </p>
+                    <Link href="/journal" className="block mt-2">
+                        <Button className="w-full">Log your first trade</Button>
+                    </Link>
+                </Card>
+
+                <Card>
+                    <CardTitle>How TradeOS works</CardTitle>
+                    <ol className="text-sm text-[var(--color-text-muted)] space-y-2 -mt-1">
+                        <li className="flex items-start gap-2">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">1.</span>
+                            <span><span className="text-[var(--color-text)] font-medium">Plan</span> &mdash; size every trade in the Calc tab before you click.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">2.</span>
+                            <span><span className="text-[var(--color-text)] font-medium">Log</span> &mdash; tap once in the Journal after each fill. Two minutes a day.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">3.</span>
+                            <span><span className="text-[var(--color-text)] font-medium">Learn</span> &mdash; let the analytics + the AI tab tell you what&rsquo;s actually working.</span>
+                        </li>
+                    </ol>
                 </Card>
             </div>
         );
