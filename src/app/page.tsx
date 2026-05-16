@@ -271,7 +271,7 @@ function AICoach() {
 
                         {/* Footer hint */}
                         <p className="text-[10px] text-[var(--color-text-subtle)] text-center mt-3">
-                            Based on your last 84 trades · Powered by Gemini
+                            Sample output. Real analysis runs on your last 100 trades.
                         </p>
                     </div>
                 </div>
