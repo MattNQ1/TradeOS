@@ -2,7 +2,6 @@
 // Larger than the favicon, dark background with the emerald triangle mark.
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 

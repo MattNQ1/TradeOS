@@ -24,7 +24,7 @@ export default async function CoachPage() {
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Coach
+                        AI
                     </h1>
                     <p className="text-sm text-[var(--color-text-muted)] mt-1">
                         Find your patterns. Run the checklist. Don&rsquo;t tilt.

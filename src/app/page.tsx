@@ -29,8 +29,8 @@ export default async function Home() {
         <div className="bg-[var(--color-bg)]">
             <Header />
             <Hero />
-            <WhyWeBuiltThis />
             <BuiltForTraders />
+            <AICoach />
             <ScreenshotGallery />
             <Pricing />
             <FAQ />
@@ -161,36 +161,119 @@ function Hero() {
 }
 
 // ============================================================
-// Why we built this — founder-voice note, kept short
+// AI coach — Pro marquee feature, showcased with a mock insight card
 // ============================================================
 
-function WhyWeBuiltThis() {
+function AICoach() {
     return (
-        <section className="relative border-t border-[var(--color-border-soft)] py-20 md:py-24">
-            <div className="max-w-2xl mx-auto px-5">
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
-                    Why we built this
-                </h2>
-                <div className="space-y-4 text-[15px] md:text-base text-[var(--color-text-muted)] leading-relaxed">
-                    <p>We&rsquo;re prop firm traders.</p>
-                    <p>
-                        We&rsquo;ve passed accounts. We&rsquo;ve blown up accounts. We&rsquo;ve passed
-                        them again.
+        <section className="relative border-t border-[var(--color-border-soft)] py-20 md:py-28 overflow-hidden">
+            {/* Subtle emerald wash behind the card */}
+            <div
+                aria-hidden
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full pointer-events-none opacity-60"
+                style={{
+                    background: "radial-gradient(ellipse, rgba(16,185,129,0.12), transparent 65%)",
+                }}
+            />
+
+            <div className="relative max-w-6xl mx-auto px-5 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-center">
+                {/* Copy */}
+                <div>
+                    <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full mb-4">
+                        Pro · AI tab
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight leading-[1.1]">
+                        Hand your journal to a coach that won&rsquo;t sugar-coat it.
+                    </h2>
+                    <p className="text-[var(--color-text-muted)] mt-4 text-base leading-relaxed">
+                        Pro reads every trade you&rsquo;ve logged and tells you what you&rsquo;d
+                        hear from a senior prop trader looking over your shoulder. Patterns
+                        you can&rsquo;t see in your own tape. Tilt you keep falling into.
+                        Setups that actually have an edge.
                     </p>
-                    <p>
-                        Every trading tool out there is built for stock traders, built for
-                        institutions, or built by people who&rsquo;ve never had a Topstep eval
-                        auto-fail because the trailing drawdown ratcheted up after taking 2R
-                        off a winner.
-                    </p>
-                    <p>
-                        So we built one for ourselves. Spreadsheets, three different apps, a
-                        notes file full of prop firm rules &mdash; all replaced with one
-                        toolkit, on the phone, ready before the next trade.
-                    </p>
-                    <p className="text-[var(--color-text)]">
-                        We figured you might want it too.
-                    </p>
+                    <ul className="flex flex-col gap-2.5 mt-6 text-sm">
+                        <li className="flex items-start gap-2.5">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+                            <span><span className="font-semibold text-[var(--color-text)]">Patterns:</span> specific, with stats. Not generic.</span>
+                        </li>
+                        <li className="flex items-start gap-2.5">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+                            <span><span className="font-semibold text-[var(--color-text)]">Tilt detection:</span> revenge sizing and FOMO entries, flagged with evidence.</span>
+                        </li>
+                        <li className="flex items-start gap-2.5">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+                            <span><span className="font-semibold text-[var(--color-text)]">Strongest setup:</span> the contract + direction combo with your real edge.</span>
+                        </li>
+                        <li className="flex items-start gap-2.5">
+                            <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">✓</span>
+                            <span><span className="font-semibold text-[var(--color-text)]">Trend tracker:</span> compares your recent sessions to your older ones.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Mock insight card — visually mirrors the real /coach output */}
+                <div className="relative">
+                    <div className="bg-[var(--color-bg-elev)] border border-[var(--color-border)] rounded-2xl p-5 shadow-[0_30px_80px_-20px_rgba(16,185,129,0.25)]">
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-3">
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                                    AI Insights
+                                </p>
+                                <p className="text-[10px] text-[var(--color-text-subtle)] mt-0.5">
+                                    Last analyzed today &middot; 84 trades
+                                </p>
+                            </div>
+                            <span className="text-[10px] font-semibold px-2 py-1 rounded bg-[color-mix(in_oklab,var(--color-accent)_15%,transparent)] text-[var(--color-accent)]">
+                                Re-analyze
+                            </span>
+                        </div>
+
+                        {/* Headline */}
+                        <div className="bg-gradient-to-br from-emerald-600/15 via-emerald-700/5 to-transparent border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] rounded-lg p-3.5 mb-3">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-1">
+                                Headline
+                            </p>
+                            <p className="text-sm font-medium text-[var(--color-text)] leading-relaxed">
+                                You&rsquo;re crushing MES longs on Tuesdays. Your NQ shorts are bleeding $1,200/wk.
+                            </p>
+                        </div>
+
+                        {/* Patterns */}
+                        <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3.5 mb-3">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
+                                Patterns
+                            </p>
+                            <ul className="flex flex-col gap-1.5 text-sm leading-relaxed">
+                                <li className="flex items-start gap-2">
+                                    <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">•</span>
+                                    <span className="text-[var(--color-text)]">You win 78% of MES longs but only 41% of NQ shorts &mdash; drop the NQ shorts.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-[var(--color-accent)] font-bold leading-tight pt-0.5">•</span>
+                                    <span className="text-[var(--color-text)]">8 of your last 10 winners came on Tuesday or Wednesday.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Watch for */}
+                        <div className="bg-[var(--color-bg-elev-2)] border border-[var(--color-border)] rounded-lg p-3.5">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-warn)] mb-2">
+                                Watch for
+                            </p>
+                            <ul className="flex flex-col gap-1.5 text-sm leading-relaxed">
+                                <li className="flex items-start gap-2">
+                                    <span className="text-[var(--color-warn)] font-bold leading-tight pt-0.5">•</span>
+                                    <span className="text-[var(--color-text)]">After your -$340 loss on 5/3, you sized up 3&times; on the next trade. Classic revenge.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Footer hint */}
+                        <p className="text-[10px] text-[var(--color-text-subtle)] text-center mt-3">
+                            Based on your last 84 trades · Powered by Gemini
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>

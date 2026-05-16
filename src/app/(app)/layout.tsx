@@ -9,7 +9,7 @@ import {
     HomeIcon,
     CalcIcon,
     JournalIcon,
-    CoachIcon,
+    AIIcon,
     PropIcon,
     EconIcon,
 } from "@/components/nav-tab-link";
@@ -51,7 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                     <NavTabLink href="/dashboard"          label="Home"    icon={<HomeIcon />} />
                     <NavTabLink href="/calculator"         label="Calc"    icon={<CalcIcon />} />
                     <NavTabLink href="/journal"            label="Journal" icon={<JournalIcon />} />
-                    <NavTabLink href="/coach"              label="Coach"   icon={<CoachIcon />} />
+                    <NavTabLink href="/coach"              label="AI"      icon={<AIIcon />} />
                     <NavTabLink href="/prop-firm"          label="Prop"    icon={<PropIcon />} />
                     <NavTabLink href="/economic-calendar"  label="Econ"    icon={<EconIcon />} />
                 </div>
