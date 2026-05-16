@@ -17,9 +17,9 @@ import {
 } from "@/components/landing/mock-screens";
 
 export const metadata = {
-    title: "TradeOS — The trading toolkit for prop firm traders",
+    title: "TradeOS — Built by traders, for traders",
     description:
-        "Position sizing, trade journal, drawdown tracking, and analytics — purpose-built for Topstep, Apex, MyFundedFutures, and FTMO accounts.",
+        "Position math, a journal that catches your patterns, and drawdown tracked to the dollar. Built for prop firm traders on Topstep, Apex, MFF, and FTMO.",
 };
 
 export default async function Home() {
@@ -32,6 +32,7 @@ export default async function Home() {
         <div className="bg-[var(--color-bg)]">
             <Header />
             <Hero />
+            <WhyWeBuiltThis />
             <BuiltForTraders />
             <ScreenshotGallery />
             <Pricing />
@@ -97,60 +98,47 @@ function Hero() {
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/50 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)]/0 via-[var(--color-bg)]/40 to-[var(--color-bg)] pointer-events-none" />
 
-            {/* Emerald aura behind the phones, pulsing softly */}
+            {/* Emerald aura behind the phones, static */}
             <div
                 aria-hidden
-                className="absolute -right-[15%] top-[10%] w-[700px] h-[700px] rounded-full pointer-events-none animate-pulse-glow"
+                className="absolute -right-[15%] top-[10%] w-[700px] h-[700px] rounded-full pointer-events-none"
                 style={{
                     background:
-                        "radial-gradient(circle, rgba(16,185,129,0.20), transparent 60%)",
-                }}
-            />
-            {/* Secondary violet wash bottom-left */}
-            <div
-                aria-hidden
-                className="absolute -left-[10%] bottom-[10%] w-[500px] h-[500px] rounded-full pointer-events-none opacity-60"
-                style={{
-                    background:
-                        "radial-gradient(circle, rgba(124,58,237,0.15), transparent 60%)",
+                        "radial-gradient(circle, rgba(16,185,129,0.18), transparent 60%)",
                 }}
             />
 
             <div className="relative max-w-6xl mx-auto px-5 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-8 items-center">
                 {/* Left: copy + CTAs */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6">
-                    <span className="animate-fade-in-up inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
-                        Built for prop firm traders
+                    <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_oklab,var(--color-accent)_12%,transparent)] border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] px-2.5 py-1 rounded-full">
+                        Built by traders, for traders
                     </span>
 
-                    <h1 className="animate-fade-in-up-1 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
-                        The trading toolkit built to{" "}
-                        <span className="bg-gradient-to-r from-[var(--color-accent)] via-emerald-400 to-emerald-300 bg-clip-text text-transparent">
-                            keep your account alive
-                        </span>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
+                        The trading toolkit prop firms hope you don&rsquo;t have.
                     </h1>
 
-                    <p className="animate-fade-in-up-2 text-base md:text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
-                        Position sizing, trade journal, drawdown tracking, and analytics — purpose-built for Topstep, Apex, MyFundedFutures, and FTMO accounts.
+                    <p className="text-base md:text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+                        Position math that&rsquo;s impossible to skip. A journal that catches the patterns you keep missing. Trailing drawdown to the dollar. Built for Topstep, Apex, MFF, and FTMO accounts.
                     </p>
 
-                    <div className="animate-fade-in-up-3 flex flex-col sm:flex-row gap-3 mt-1 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row gap-3 mt-1 w-full sm:w-auto">
                         <Link href="/signup" className="w-full sm:w-auto">
                             <button className="btn-cta-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-lg text-base font-semibold">
-                                Start 7-day free trial
+                                Try it free for 7 days
                                 <span aria-hidden className="inline-block transition-transform group-hover:translate-x-1">→</span>
                             </button>
                         </Link>
                         <Link href="#pricing" className="w-full sm:w-auto">
                             <button className="btn-cta-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-lg text-base font-semibold">
-                                See pricing
+                                See what it costs
                             </button>
                         </Link>
                     </div>
 
-                    <p className="animate-fade-in-up-4 text-xs text-[var(--color-text-subtle)]">
-                        $0 today · $19/mo after trial · Cancel anytime before renewal
+                    <p className="text-xs text-[var(--color-text-subtle)]">
+                        $0 today. $19/mo after. Cancel before day 8 if you hate it.
                     </p>
                 </div>
 
@@ -176,6 +164,43 @@ function Hero() {
 }
 
 // ============================================================
+// Why we built this — founder-voice note, kept short
+// ============================================================
+
+function WhyWeBuiltThis() {
+    return (
+        <section className="relative border-t border-[var(--color-border-soft)] py-20 md:py-24">
+            <div className="max-w-2xl mx-auto px-5">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
+                    Why we built this
+                </h2>
+                <div className="space-y-4 text-[15px] md:text-base text-[var(--color-text-muted)] leading-relaxed">
+                    <p>We&rsquo;re prop firm traders.</p>
+                    <p>
+                        We&rsquo;ve passed accounts. We&rsquo;ve blown up accounts. We&rsquo;ve passed
+                        them again.
+                    </p>
+                    <p>
+                        Every trading tool out there is built for stock traders, built for
+                        institutions, or built by people who&rsquo;ve never had a Topstep eval
+                        auto-fail because the trailing drawdown ratcheted up after taking 2R
+                        off a winner.
+                    </p>
+                    <p>
+                        So we built one for ourselves. Spreadsheets, three different apps, a
+                        notes file full of prop firm rules &mdash; all replaced with one
+                        toolkit, on the phone, ready before the next trade.
+                    </p>
+                    <p className="text-[var(--color-text)]">
+                        We figured you might want it too.
+                    </p>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ============================================================
 // Built for futures traders — 6 feature cards
 // ============================================================
 
@@ -183,32 +208,32 @@ const TRADER_FEATURES = [
     {
         icon: PositionIcon,
         title: "Position sizing",
-        body: "Risk-based sizing across 8 contracts. Tell us your account % at risk; we tell you the exact contracts to trade.",
+        body: "Tell it your account, your stop, your risk %. It tells you the exact number of contracts. No menu-diving, no spreadsheet.",
     },
     {
         icon: ShieldIcon,
         title: "Drawdown tracking",
-        body: "Trailing drawdown math runs in real time. Catch violations before they cost you a funded account.",
+        body: "Trailing drawdown to the dollar. Warns you before you violate. Not after, when it's too late to unwind.",
     },
     {
         icon: JournalIcon,
-        title: "Trade journaling",
-        body: "Log trades in two taps. Auto-flows into stats, equity curve, and the color-coded P&L calendar.",
+        title: "Trade journal",
+        body: "Two taps to log a fill. Equity curve, P&L calendar, and the stats that actually matter, all auto-built behind it.",
     },
     {
         icon: CalendarIcon,
         title: "Economic calendar",
-        body: "Every release this week + next. Plain-English explanations for NFP, CPI, FOMC, GDP, ISM, and more.",
+        body: "NFP, CPI, FOMC, GDP. What they are, when they hit, why you should care. Or stay flat through them, your call.",
     },
     {
         icon: ChartIcon,
         title: "Performance analytics",
-        body: "Profit factor, expectancy, win rate by day-of-week, P&L by contract. See your real edge — not vibes.",
+        body: "Profit factor, expectancy, win rate by day, P&L by contract. The stats your edge actually shows up in. Or doesn't.",
     },
     {
         icon: BuildingIcon,
-        title: "Prop firm tools",
-        body: "Topstep, Apex, MyFundedFutures, FTMO presets. Track daily limits + profit targets per firm.",
+        title: "Prop firm rules",
+        body: "Topstep, Apex, MFF, FTMO presets baked in. Track daily limits and profit targets per account, zero manual setup.",
     },
 ];
 
@@ -217,19 +242,16 @@ function BuiltForTraders() {
         <section className="relative py-20 md:py-28 border-t border-[var(--color-border-soft)]">
             <div className="max-w-6xl mx-auto px-5">
                 <div className="text-center max-w-2xl mx-auto mb-12">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
-                        Built for futures traders
-                    </p>
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        Everything a serious trader actually needs
+                        What&rsquo;s actually in it
                     </h2>
                     <p className="text-[var(--color-text-muted)] mt-4">
-                        Stop juggling a calculator app, an Excel journal, a notes app for prop firm rules, and an economic calendar in another tab. TradeOS replaces all of it.
+                        Six tools, one tab. Replaces the calculator app, the Excel journal, the notes file full of prop firm rules, and the econ calendar you forgot to check.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {TRADER_FEATURES.map((f, i) => {
+                    {TRADER_FEATURES.map((f) => {
                         const Icon = f.icon;
                         return (
                             <div
@@ -273,34 +295,27 @@ function ScreenshotGallery() {
             <div className="absolute inset-0 bg-grid-dots opacity-30 pointer-events-none" />
 
             <div className="relative max-w-6xl mx-auto px-5 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
-                    See it in action
-                </p>
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                    The way trading software{" "}
-                    <span className="bg-gradient-to-r from-[var(--color-accent)] to-emerald-300 bg-clip-text text-transparent">
-                        should
-                    </span>{" "}
-                    look
+                    Made for the device you actually trade from
                 </h2>
                 <p className="text-[var(--color-text-muted)] mt-4 max-w-xl mx-auto">
-                    Three taps to plan a trade. One to log it. Drawdown math runs itself.
+                    Three taps to plan a trade. One to log it. The drawdown math runs itself in the background, every time.
                 </p>
             </div>
 
             {/* Phone row — desktop */}
             <div className="relative max-w-5xl mx-auto mt-12 md:mt-16 px-4 hidden md:flex items-end justify-center gap-2">
-                <div className="animate-float-slow">
+                <div>
                     <PhoneFrame size="sm" tilt={-6} glow={false}>
                         <MockJournal />
                     </PhoneFrame>
                 </div>
-                <div className="-mb-6 z-10 animate-float-slow-reverse">
+                <div className="-mb-6 z-10">
                     <PhoneFrame size="md" tilt={0}>
                         <MockPropFirm />
                     </PhoneFrame>
                 </div>
-                <div className="animate-float-slow">
+                <div>
                     <PhoneFrame size="sm" tilt={6} glow={false}>
                         <MockEconomicCalendar />
                     </PhoneFrame>
@@ -332,14 +347,11 @@ function Pricing() {
         <section id="pricing" className="relative py-20 md:py-28 border-t border-[var(--color-border-soft)]">
             <div className="max-w-5xl mx-auto px-5">
                 <div className="text-center max-w-2xl mx-auto mb-12">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
-                        Simple pricing
-                    </p>
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        Start free. Upgrade when it pays for itself.
+                        Cheaper than one bad trade
                     </h2>
                     <p className="text-[var(--color-text-muted)] mt-4">
-                        One avoided drawdown violation pays for a year of Pro. Cancel anytime.
+                        One drawdown violation you didn&rsquo;t take pays for a year of Pro. Three pays for Lifetime. Cancel anytime.
                     </p>
                 </div>
 
@@ -348,16 +360,16 @@ function Pricing() {
                         name="Free"
                         price="$0"
                         priceSuffix="forever"
-                        description="The calculator + a basic journal. Good for casual traders."
+                        description="The calculator and a starter journal. Good for someone testing the waters."
                         features={[
-                            "Position calculator (all 8 contracts)",
+                            "Position calculator, all 8 contracts",
                             "Up to 25 logged trades",
                             "Basic stats + P&L calendar",
                             "15 prop firm presets",
                             "Today's economic events",
                         ]}
                         ctaHref="/signup"
-                        ctaText="Get started free"
+                        ctaText="Start free"
                         highlighted={false}
                     />
 
@@ -366,17 +378,17 @@ function Pricing() {
                         badge="Most popular"
                         price="$19"
                         priceSuffix="/mo"
-                        description="The full toolkit. 7-day free trial, $19/mo after — cancel anytime before renewal."
+                        description="The full toolkit. Free for 7 days, $19/mo after. Cancel any time, no questions."
                         features={[
                             "7-day free trial",
                             "Unlimited trades + history",
-                            "Full economic calendar with explanations",
+                            "Full economic calendar with explainers",
                             "Custom prop firm rules",
                             "CSV bulk import + export",
-                            "Priority support",
+                            "Priority support from real humans",
                         ]}
                         ctaHref="/signup"
-                        ctaText="Start 7-day free trial"
+                        ctaText="Try Pro free"
                         highlighted
                     />
 
@@ -385,23 +397,23 @@ function Pricing() {
                         badge="Best value"
                         price="$199"
                         priceSuffix="once"
-                        description="One payment, every Pro feature, forever. Founders pricing — locks in before public launch."
+                        description="Pay once. Every Pro feature, forever. Founders pricing, only until public launch."
                         features={[
                             "Everything in Pro",
                             "Pay once, never again",
                             "All future features included",
                             "Lifetime updates",
-                            "Founders pricing — limited time",
+                            "Founders pricing — going up at launch",
                         ]}
                         ctaHref="/signup"
-                        ctaText="Get Lifetime"
+                        ctaText="Buy once, done"
                         highlighted={false}
                         accent="warn"
                     />
                 </div>
 
                 <p className="text-center text-xs text-[var(--color-text-subtle)] mt-8">
-                    All plans include account deletion + full data export. We never sell your data.
+                    Every plan includes one-click account deletion and full data export. We don&rsquo;t sell your trades to anyone.
                 </p>
             </div>
         </section>
@@ -493,28 +505,28 @@ function PricingCard({
 
 const FAQS = [
     {
-        q: "How does the 7-day free trial work?",
-        a: "You enter your payment method up-front, but $0 is charged for the first 7 days. On day 8, we auto-bill $19/mo unless you cancel before then. You can cancel anytime from Settings → Manage subscription with one click.",
+        q: "How does the free trial work?",
+        a: "You enter a card up-front but $0 is charged for the first 7 days. On day 8 we auto-bill $19/mo, unless you cancel first. Cancellation is one click in Settings — no email back-and-forth, no retention guilt trip.",
     },
     {
         q: "Can I cancel anytime?",
-        a: "Yes. Cancel from Settings → Manage subscription. Cancellation during the trial means no charge. Cancellation after means your Pro access stays until the end of the period you've already paid for, then drops to Free.",
+        a: "Yes. Cancel in Settings → Manage subscription. If you cancel during the trial, you're never charged. If you cancel after, you keep Pro until the end of the period you already paid for, then drop to Free.",
     },
     {
         q: "What brokers do you sync with?",
-        a: "Auto-sync from brokers and prop firms (Topstep, Apex, MFF, NinjaTrader, Tradovate, Rithmic) is in development and ships to Pro/Lifetime users when launched. Until then, log trades manually with one tap or bulk-import via CSV (Pro).",
+        a: "Auto-sync from brokers and prop firms (Topstep, Apex, MFF, NinjaTrader, Tradovate, Rithmic) is in the works for Pro and Lifetime users. Until then, log trades by tapping once or bulk-import via CSV.",
     },
     {
-        q: "Is my trade data private?",
-        a: "Yes. Trades are stored in Supabase with Row Level Security — only your account can read or write them, even via direct database access. We never sell, share, or use your data for anything but providing the service.",
+        q: "Is my data private?",
+        a: "Yes. Your trades are stored in your own row in our database with strict access rules — only your account can read them. We don't sell, share, or train models on your data. Ever.",
     },
     {
-        q: "Refund policy?",
-        a: "Email us within 14 days of any Pro charge or Lifetime purchase and we'll refund, no questions asked. Use the trial first if you're unsure — that's exactly what it's for.",
+        q: "What's the refund policy?",
+        a: "Email us within 14 days of any Pro charge or Lifetime purchase and we refund, no questions asked. Use the free trial first if you're unsure — that's literally what it's for.",
     },
     {
-        q: "Do you have a mobile app?",
-        a: "TradeOS works as a Progressive Web App — install to your iPhone or Android home screen and it behaves like a native app, including offline support. Native iOS/Android apps are on the roadmap.",
+        q: "Is there a mobile app?",
+        a: "TradeOS installs to your iPhone or Android home screen as a Progressive Web App. It behaves like a native app (offline support, no browser chrome) without the app store delay. Native apps are on the roadmap.",
     },
 ] as const;
 
@@ -523,11 +535,8 @@ function FAQ() {
         <section id="faq" className="py-20 md:py-28 border-t border-[var(--color-border-soft)]">
             <div className="max-w-2xl mx-auto px-5">
                 <div className="text-center mb-10">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-3">
-                        Common questions
-                    </p>
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        Before you sign up
+                        Questions before you commit
                     </h2>
                 </div>
 
@@ -571,18 +580,18 @@ function FinalCTA() {
                 }}
             />
             <div className="relative max-w-3xl mx-auto px-5">
-                <div className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] bg-gradient-to-br from-emerald-600/10 via-violet-700/5 to-transparent p-10 md:p-14 text-center">
+                <div className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] bg-gradient-to-br from-emerald-600/10 via-emerald-700/5 to-transparent p-10 md:p-14 text-center">
                     <div className="absolute -right-8 -top-8 text-[200px] leading-none opacity-5 select-none pointer-events-none">▲</div>
                     <div className="relative flex flex-col items-center gap-5">
                         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                            Start tracking better trades today
+                            Stop blowing up accounts. Start tracking the math.
                         </h2>
                         <p className="text-[var(--color-text-muted)] max-w-md">
-                            7-day free trial. $19/mo after — cancel anytime before renewal.
+                            7 days free. $19/mo after. Cancel before day 8 if you hate it.
                         </p>
                         <Link href="/signup" className="w-full sm:w-auto">
                             <button className="btn-cta-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-base font-semibold">
-                                Start your free trial →
+                                Get TradeOS →
                             </button>
                         </Link>
                         <p className="text-xs text-[var(--color-text-subtle)]">
@@ -602,18 +611,23 @@ function FinalCTA() {
 function Footer() {
     return (
         <footer className="border-t border-[var(--color-border-soft)] py-10">
-            <div className="max-w-5xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--color-text-muted)]">
-                <div className="flex items-center gap-2">
-                    <span className="text-[var(--color-accent)]">▲</span>
-                    <span className="font-bold text-[var(--color-text)]">TradeOS</span>
-                    <span className="text-xs text-[var(--color-text-subtle)] ml-1">v0.1.0</span>
+            <div className="max-w-5xl mx-auto px-5 flex flex-col items-center gap-5 text-sm text-[var(--color-text-muted)]">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 w-full">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[var(--color-accent)]">▲</span>
+                        <span className="font-bold text-[var(--color-text)]">TradeOS</span>
+                        <span className="text-xs text-[var(--color-text-subtle)] ml-1">v0.1.0</span>
+                    </div>
+                    <div className="flex items-center gap-5 text-xs">
+                        <Link href="/login" className="hover:text-[var(--color-text)] transition-colors">Sign in</Link>
+                        <Link href="/signup" className="hover:text-[var(--color-text)] transition-colors">Get started</Link>
+                        <Link href="/privacy" className="hover:text-[var(--color-text)] transition-colors">Privacy</Link>
+                        <Link href="/terms" className="hover:text-[var(--color-text)] transition-colors">Terms</Link>
+                    </div>
                 </div>
-                <div className="flex items-center gap-5 text-xs">
-                    <Link href="/login" className="hover:text-[var(--color-text)] transition-colors">Sign in</Link>
-                    <Link href="/signup" className="hover:text-[var(--color-text)] transition-colors">Get started</Link>
-                    <Link href="/privacy" className="hover:text-[var(--color-text)] transition-colors">Privacy</Link>
-                    <Link href="/terms" className="hover:text-[var(--color-text)] transition-colors">Terms</Link>
-                </div>
+                <p className="text-xs text-[var(--color-text-subtle)] text-center max-w-md">
+                    Built by prop firm traders, in the gaps between sessions, because nobody else was going to.
+                </p>
             </div>
         </footer>
     );
