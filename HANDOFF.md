@@ -106,6 +106,27 @@ metadata).
 - CSV modal: removed pulsing 📥 emoji, tightened subtitles
 - Data section: dropped "stored on Supabase" jargon for plain wording
 
+**Commit 6 — Insights + profit target: kill remaining emojis** (`589a740`)
+- InsightBlock + SinglePoint components: removed the `icon` prop. The
+  📈/✨/📊/🎯 emoji "icons" on AI insight sections were a strong AI
+  tell. Color-coded eyebrows already differentiate sections visually.
+- Renamed two section headers for directness:
+  - "Emotional alerts" → "Watch for"
+  - "Improvements" → "Doing better"
+- profit-target.tsx: "🎉 Profit target reached!" → "Profit target hit.
+  You're funded."
+
+**Commit 7 — EventModal + TradeList polish** (`6445404`)
+- EventModal paywall variant (free user taps a gated econ event):
+  removed 🔒 emoji, toned violet → emerald, replaced ✕ with real SVG,
+  rewrote headline ("This one's behind Pro") + subtitle + CTAs.
+- Main EventModal hero close-button ✕ also replaced with SVG.
+- TradeList empty state: dropped 📓 emoji, tightened copy.
+
+Final state: `npm run build` clean. `npm run lint` shows zero
+warnings or errors. All changes are purely cosmetic / copy — zero
+functional changes, zero schema changes, zero env var changes.
+
 ### What didn't change
 
 - Functionality, logic, routes, database, env vars, Stripe, Gemini
