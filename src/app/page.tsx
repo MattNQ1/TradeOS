@@ -323,10 +323,10 @@ function BuiltForTraders() {
             <div className="max-w-6xl mx-auto px-5">
                 <div className="text-center max-w-2xl mx-auto mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                        What&rsquo;s actually in it
+                        The rest of the toolkit
                     </h2>
                     <p className="text-[var(--color-text-muted)] mt-4">
-                        Six tools, one tab. Replaces the calculator app, the Excel journal, the notes file full of prop firm rules, and the econ calendar you forgot to check.
+                        Six more tools beyond the AI. Together they replace the calculator app, the Excel journal, the notes file full of prop firm rules, and the econ calendar you forgot to check.
                     </p>
                 </div>
 

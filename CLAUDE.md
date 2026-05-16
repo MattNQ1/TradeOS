@@ -20,7 +20,7 @@ calendar, AI coach) on their phone.
 
 **Business model:**
 - Free tier — basic calculator, journal, prop firm tracker, economic calendar
-- **Pro ($19/mo, 7-day trial)** — adds the Coach tab (pre-trade checklist + AI
+- **Pro ($19/mo, 7-day trial)** — adds the AI tab (pre-trade checklist + AI
   journal insights), unlimited trades, advanced analytics
 - **Lifetime ($199 one-time)** — same as Pro, forever
 
@@ -50,7 +50,8 @@ src/
       dashboard/    ← Home tab
       calculator/   ← Calc tab
       journal/      ← Journal tab
-      coach/        ← Coach tab (PRO ONLY — checklist + AI insights)
+      coach/        ← AI tab (PRO ONLY — checklist + AI insights). Route
+                       kept as /coach internally; user-facing label is "AI".
       prop-firm/    ← Prop tab
       economic-calendar/  ← Econ tab
       settings/

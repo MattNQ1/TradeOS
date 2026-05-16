@@ -228,16 +228,28 @@ rewritten to use Gemini's `responseSchema` for guaranteed JSON output.
 
 Earlier we considered embedding the pre-trade checklist into the
 calculator and AI insights into the journal. Matt vetoed that
-approach — the Pro features now have their own `/coach` tab in the
-bottom nav. The narrative is "Pro gives you the Coach tab," not "Pro
+approach — the Pro features now have their own tab in the bottom
+nav. The narrative is "Pro gives you the AI tab," not "Pro
 sprinkles features around the app." Don't move them back.
+
+### Tab is called "AI" but the route is /coach
+
+The bottom-nav tab label was changed from "Coach" → "AI" with a brain
+icon (per Matt). The route stays `/coach` for stability — middleware
+references, server actions doing `revalidatePath("/coach")`, etc.
+all still point at `/coach`. Only the visible label + icon were
+changed. Don't rename the route unless asked.
 
 ### Bottom nav is 6 tabs (grid-cols-6)
 
-`Home · Calc · Journal · Coach · Prop · Econ`. Adding a 7th tab will
+`Home · Calc · Journal · AI · Prop · Econ`. Adding a 7th tab will
 break the responsive layout on small phones — don't do it without
 discussing. The Settings page is reached via the gear icon in the top
 header, not the bottom nav.
+
+Each tab has a Lucide-style inline-SVG icon: house / calculator /
+open-book / brain / shield / calendar. Defined in
+`src/components/nav-tab-link.tsx`.
 
 ### Stripe is in LIVE mode
 
