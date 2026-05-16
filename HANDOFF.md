@@ -4,9 +4,10 @@ This is the short-lived companion to `CLAUDE.md`. Update it as work
 progresses. When picking up a session, read this *after* `CLAUDE.md` to
 get oriented on what's in flight.
 
-Last meaningful update: **2026-05-16** — overnight de-AI polish pass
-across the entire app (landing + all authenticated views + OG
-metadata).
+Last meaningful update: **2026-05-16** — second overnight run:
+Coach → AI rename + brain icon, new AI showcase section on landing,
+mock-phone navs updated to match real app, branded 404 / error
+boundary / robots / sitemap / PWA manifest, per-page titles.
 
 ---
 
@@ -128,12 +129,79 @@ metadata).
   border already signals "drop file here")
 - Done stage: dropped ✅ emoji, tightened success copy
 
-Final state: `npm run build` clean. `npm run lint` shows zero
-warnings or errors. All changes are purely cosmetic / copy — zero
-functional changes, zero schema changes, zero env var changes.
+---
 
-10 commits pushed total over the overnight run (8 polish + 1 HANDOFF
-init + 1 HANDOFF update).
+## Second overnight run — 2026-05-16 (after Matt verified AI works)
+
+After Matt verified the AI insights fix worked, he went back to bed
+and asked Claude to keep polishing. Eleven more commits.
+
+**AI insights JSON-truncation fix** (`95e6381`)
+- Gemini 2.5 Flash's "thinking" mode was eating output tokens before
+  the JSON response even started, truncating it mid-string and
+  causing "Unterminated string in JSON at position 156" parse errors.
+- Bumped maxOutputTokens 1024 → 4096
+- Added `thinkingConfig: { thinkingBudget: 0 }` to disable thinking
+  for this structured-extraction task (no chain-of-thought needed)
+- Surfaces "ran past length limit" if finishReason === MAX_TOKENS
+- Wraps JSON.parse in its own try/catch with better logging
+
+**Bottom nav redesign** (`d52849e`)
+- Was text-only labels. Now has Lucide-style inline-SVG icons stacked
+  above each label, active:scale-95 tap feedback, safe-area padding
+  for iPhone home-indicator, per-tab aria-label, nav aria-label.
+
+**Coach → AI rename + brain icon** (linter applied)
+- Tab label changed from "Coach" to "AI", icon swapped from compass
+  to two-lobed brain. Route stays `/coach` for stability (middleware,
+  revalidatePath calls). Page heading on /coach is now "AI".
+- Vercel "edge runtime disables static generation" warning fixed by
+  removing `export const runtime = "edge"` from opengraph-image.tsx,
+  icon.tsx, apple-icon.tsx.
+
+**AICoach landing section + mock nav update** (`71d2e5e`)
+- Landing page got a prominent AICoach section between Hero and the
+  feature grid. Split layout: left has copy + 4-bullet list of what
+  the AI does, right has a styled mock insight card with real-looking
+  example output (Patterns / Watch for / Strongest setup).
+- Replaces the previous "Why we built this" section (deleted).
+- Mock phone screens on the landing now show the new 6-tab nav
+  (Home/Calc/Journal/AI/Prop/Econ) with tiny 12px icons matching the
+  real app. Defined in mock-screens.tsx as Tiny*Icon components.
+
+**Feature grid header reframed** (`d0f58e1`)
+- "What's actually in it / Six tools, one tab" → "The rest of the
+  toolkit / Six more tools beyond the AI" so the narrative flows
+  from AICoach hero into the grid.
+- CLAUDE.md + HANDOFF.md updated for the AI tab rename.
+
+**404 + robots + sitemap** (`342902e`)
+- src/app/not-found.tsx: branded 404 with TradeOS aesthetic and
+  back-to-home / back-to-dashboard CTAs.
+- src/app/robots.ts: auto-served /robots.txt, allows /, disallows
+  the auth-gated app routes.
+- src/app/sitemap.ts: auto-served /sitemap.xml, lists the 5 public
+  pages with priorities + change frequencies.
+
+**PWA manifest + global error boundary** (`67a3e6c`)
+- src/app/manifest.ts: auto-served /manifest.webmanifest. Makes
+  "Add to Home Screen" render with the TradeOS name, brain ▲ icon,
+  emerald theme. start_url goes to /dashboard.
+- src/app/error.tsx: branded global error boundary. Shows
+  error.digest for support tickets, has a "Try again" button that
+  calls Next's reset(), plus back-to-homepage Link.
+
+**Per-page browser-tab titles** (`2f34c47`)
+- All 11 (app), (auth), privacy, terms pages now set their own
+  metadata.title. Root layout's "%s · TradeOS" template wraps each
+  one. So bookmarks/tabs now read "Calculator · TradeOS" etc.
+  instead of every tab showing the homepage title.
+- Privacy + Terms had hardcoded "X · TradeOS" titles that were
+  being double-suffixed by the root template ("X · TradeOS ·
+  TradeOS"). Fixed.
+
+Final state: `npm run build` clean. Zero ESLint warnings. 19 commits
+total pushed over the two overnight runs.
 
 ### What didn't change
 
