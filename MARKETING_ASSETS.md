@@ -5,21 +5,34 @@ under `/marketing/*` routes (gated from search engines via robots.txt).
 
 ---
 
-## Instagram carousel — download the slides
+## Instagram carousel — screenshot the slides
 
-Once Vercel redeploys, visit these 5 URLs in your browser:
+Visit ONE URL in Chrome (works on phone too but desktop is easier):
 
-1. https://usetradeos.vercel.app/marketing/slide?n=1
-2. https://usetradeos.vercel.app/marketing/slide?n=2
-3. https://usetradeos.vercel.app/marketing/slide?n=3
-4. https://usetradeos.vercel.app/marketing/slide?n=4
-5. https://usetradeos.vercel.app/marketing/slide?n=5
+**https://usetradeos.vercel.app/marketing/carousel**
 
-For each one: **right-click → "Save image as..."** → save as `slide-1.png`,
-`slide-2.png`, etc.
+You'll see 5 slides stacked vertically, each rendered at native 1080×1350
+using the **actual landing-page phone mockups** (same components as the
+real site). Real components, pixel-perfect — not Satori approximations.
 
-Each slide is 1080×1350 (Instagram 4:5 portrait, max vertical real estate
-on a phone scroll).
+### How to download each slide as PNG
+
+**Best quality (recommended):** Chrome DevTools
+
+1. Right-click any slide → **Inspect**
+2. In the DevTools Elements panel, find the highlighted `<section data-slide="N">` element
+3. Right-click that element → **"Capture node screenshot"**
+4. PNG downloads at native 1080×1350 resolution
+
+**Easier fallback:** macOS screenshot tool
+
+1. Press **⌘ + Shift + 4** (Cmd-Shift-4)
+2. Drag a box around the slide
+3. Crop / resize after if needed (most photo apps can handle this)
+
+On Windows: **Windows + Shift + S** then box-select.
+
+Save them as `slide-1.png` through `slide-5.png`.
 
 Slide flow:
 - **1. Hook** — "You're juggling 4 apps to manage one funded account."

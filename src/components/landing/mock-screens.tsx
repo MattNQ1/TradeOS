@@ -142,6 +142,80 @@ function MockCardTitle({ children }: { children: React.ReactNode }) {
 }
 
 // ============================================================
+// 0. AI tab — Pro feature with mock insights output
+// ============================================================
+
+export function MockAI() {
+    return (
+        <>
+            <MockHeader title="AI" />
+            <div className="px-3 pt-3 pb-16 flex flex-col gap-2 text-[var(--color-text)]">
+                <div>
+                    <h1 className="text-base font-bold">AI</h1>
+                    <p className="text-[9px] text-[var(--color-text-muted)]">
+                        Find your patterns. Run the checklist.
+                    </p>
+                </div>
+
+                {/* AI Insights main card with headline */}
+                <MockCard>
+                    <div className="flex items-start justify-between mb-1.5">
+                        <div>
+                            <MockCardTitle>AI insights</MockCardTitle>
+                            <p className="text-[8px] text-[var(--color-text-subtle)] -mt-1">
+                                Last analyzed today · 84 trades
+                            </p>
+                        </div>
+                        <span className="text-[8px] font-bold uppercase px-1.5 py-0.5 rounded bg-[var(--color-accent)] text-white whitespace-nowrap">
+                            Re-analyze
+                        </span>
+                    </div>
+                    <div className="bg-gradient-to-br from-emerald-600/15 via-emerald-700/5 to-transparent border border-[color-mix(in_oklab,var(--color-accent)_30%,transparent)] rounded p-2">
+                        <p className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1">
+                            Headline
+                        </p>
+                        <p className="text-[10px] font-medium leading-snug">
+                            Crushing MES longs on Tuesdays. NQ shorts bleeding $1,200/wk.
+                        </p>
+                    </div>
+                </MockCard>
+
+                {/* Patterns block */}
+                <MockCard>
+                    <p className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-accent)] mb-1">
+                        Patterns
+                    </p>
+                    <ul className="flex flex-col gap-1 text-[10px] leading-snug">
+                        <li className="flex items-start gap-1.5">
+                            <span className="text-[var(--color-accent)] font-bold leading-none pt-0.5">•</span>
+                            <span>78% win rate on MES longs, 41% on NQ shorts.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                            <span className="text-[var(--color-accent)] font-bold leading-none pt-0.5">•</span>
+                            <span>8 of last 10 winners came Tue/Wed.</span>
+                        </li>
+                    </ul>
+                </MockCard>
+
+                {/* Watch-for block */}
+                <MockCard>
+                    <p className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-warn)] mb-1">
+                        Watch for
+                    </p>
+                    <ul className="flex flex-col gap-1 text-[10px] leading-snug">
+                        <li className="flex items-start gap-1.5">
+                            <span className="text-[var(--color-warn)] font-bold leading-none pt-0.5">•</span>
+                            <span>Sized up 3× after −$340 loss. Classic revenge.</span>
+                        </li>
+                    </ul>
+                </MockCard>
+            </div>
+            <MockTabBar active="ai" />
+        </>
+    );
+}
+
+// ============================================================
 // 1. Dashboard — analytics with equity curve
 // ============================================================
 
