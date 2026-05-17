@@ -43,19 +43,31 @@ const COLORS = {
 const FRAME_PADDING = 80;
 
 // Tiny wordmark used in the corner of every slide for brand consistency.
+// Every child has display:flex set — Satori (next/og's renderer) requires
+// this on every div with children.
 function Wordmark({ marginBottom = 60 }: { marginBottom?: number }) {
     return (
         <div
             style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 14,
                 marginBottom,
             }}
         >
-            <div style={{ fontSize: 36, color: COLORS.accent, lineHeight: 1 }}>▲</div>
             <div
                 style={{
+                    display: "flex",
+                    fontSize: 36,
+                    color: COLORS.accent,
+                    lineHeight: 1,
+                    marginRight: 14,
+                }}
+            >
+                ▲
+            </div>
+            <div
+                style={{
+                    display: "flex",
                     fontSize: 28,
                     fontWeight: 700,
                     color: COLORS.text,
@@ -113,7 +125,7 @@ const SLIDES = [
 
             <div
                 style={{
-                    flex: 1,
+                    flexGrow: 1,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
@@ -121,6 +133,7 @@ const SLIDES = [
             >
                 <div
                     style={{
+                        display: "flex",
                         fontSize: 30,
                         color: COLORS.accent,
                         fontWeight: 700,
@@ -133,6 +146,7 @@ const SLIDES = [
                 </div>
                 <div
                     style={{
+                        display: "flex",
                         fontSize: 86,
                         fontWeight: 800,
                         lineHeight: 1.05,
@@ -177,6 +191,7 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 56,
                     fontWeight: 800,
                     lineHeight: 1.1,
@@ -191,8 +206,7 @@ const SLIDES = [
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: 22,
-                    flex: 1,
+                    flexGrow: 1,
                 }}
             >
                 {[
@@ -200,31 +214,53 @@ const SLIDES = [
                     { name: "Trade journal", where: "Excel sheet" },
                     { name: "Prop firm rules", where: "Notes app" },
                     { name: "Economic events", where: "Forex Factory tab" },
-                ].map((item) => (
+                ].map((item, idx) => (
                     <div
                         key={item.name}
                         style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: 24,
-                            padding: "26px 28px",
+                            paddingTop: 26,
+                            paddingBottom: 26,
+                            paddingLeft: 28,
+                            paddingRight: 28,
+                            marginTop: idx === 0 ? 0 : 22,
                             background: "rgba(255,255,255,0.04)",
-                            border: "1px solid rgba(255,255,255,0.08)",
                             borderRadius: 18,
+                            borderWidth: 1,
+                            borderStyle: "solid",
+                            borderColor: "rgba(255,255,255,0.08)",
                         }}
                     >
                         <div
                             style={{
+                                display: "flex",
                                 width: 14,
                                 height: 14,
                                 borderRadius: 7,
                                 background: COLORS.warn,
+                                marginRight: 24,
+                                flexShrink: 0,
                             }}
                         />
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                            <div style={{ fontSize: 30, fontWeight: 700 }}>{item.name}</div>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
                             <div
                                 style={{
+                                    display: "flex",
+                                    fontSize: 30,
+                                    fontWeight: 700,
+                                }}
+                            >
+                                {item.name}
+                            </div>
+                            <div
+                                style={{
+                                    display: "flex",
                                     fontSize: 22,
                                     color: COLORS.textMuted,
                                     marginTop: 4,
@@ -239,11 +275,11 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 28,
                     color: COLORS.textMuted,
                     marginTop: 40,
                     fontStyle: "italic",
-                    display: "flex",
                 }}
             >
                 Each one is fine alone. Together they&rsquo;re a focus killer.
@@ -272,6 +308,7 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 72,
                     fontWeight: 800,
                     lineHeight: 1.05,
@@ -286,8 +323,7 @@ const SLIDES = [
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: 18,
-                    flex: 1,
+                    flexGrow: 1,
                 }}
             >
                 {[
@@ -296,28 +332,31 @@ const SLIDES = [
                     "Trailing drawdown tracked to the dollar",
                     "Prop firm presets (Topstep, Apex, MFF, FTMO)",
                     "Economic calendar with explainers",
-                ].map((line) => (
+                ].map((line, idx) => (
                     <div
                         key={line}
                         style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: 20,
+                            marginTop: idx === 0 ? 0 : 18,
                         }}
                     >
                         <div
                             style={{
+                                display: "flex",
                                 fontSize: 36,
                                 color: COLORS.accent,
                                 fontWeight: 800,
                                 lineHeight: 1,
-                                display: "flex",
+                                marginRight: 20,
+                                flexShrink: 0,
                             }}
                         >
                             ✓
                         </div>
                         <div
                             style={{
+                                display: "flex",
                                 fontSize: 34,
                                 fontWeight: 500,
                                 color: COLORS.text,
@@ -331,10 +370,10 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 26,
                     color: COLORS.textMuted,
                     marginTop: 30,
-                    display: "flex",
                 }}
             >
                 Mobile-first. Designed for the device you actually trade from.
@@ -363,12 +402,16 @@ const SLIDES = [
 
             <div
                 style={{
-                    display: "inline-flex",
+                    display: "flex",
                     alignItems: "center",
-                    gap: 12,
-                    padding: "10px 20px",
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingLeft: 20,
+                    paddingRight: 20,
                     background: COLORS.accentSoft,
-                    border: `1px solid ${COLORS.accentBorder}`,
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: COLORS.accentBorder,
                     borderRadius: 999,
                     fontSize: 22,
                     fontWeight: 700,
@@ -384,6 +427,7 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 60,
                     fontWeight: 800,
                     lineHeight: 1.05,
@@ -398,8 +442,7 @@ const SLIDES = [
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: 22,
-                    flex: 1,
+                    flexGrow: 1,
                 }}
             >
                 {[
@@ -418,31 +461,45 @@ const SLIDES = [
                         color: COLORS.gain,
                         text: "MES longs on Tuesdays — 8/10 wins, +$840 net.",
                     },
-                ].map((q) => (
+                ].map((q, idx) => (
                     <div
                         key={q.label}
                         style={{
                             background: "rgba(255,255,255,0.04)",
-                            border: "1px solid rgba(255,255,255,0.08)",
+                            borderWidth: 1,
+                            borderStyle: "solid",
+                            borderColor: "rgba(255,255,255,0.08)",
                             borderRadius: 16,
-                            padding: "22px 26px",
+                            paddingTop: 22,
+                            paddingBottom: 22,
+                            paddingLeft: 26,
+                            paddingRight: 26,
+                            marginTop: idx === 0 ? 0 : 22,
                             display: "flex",
                             flexDirection: "column",
-                            gap: 10,
                         }}
                     >
                         <div
                             style={{
+                                display: "flex",
                                 fontSize: 18,
                                 fontWeight: 700,
                                 color: q.color,
                                 textTransform: "uppercase",
                                 letterSpacing: 1.5,
+                                marginBottom: 10,
                             }}
                         >
                             {q.label}
                         </div>
-                        <div style={{ fontSize: 24, lineHeight: 1.35, color: COLORS.text }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                fontSize: 24,
+                                lineHeight: 1.35,
+                                color: COLORS.text,
+                            }}
+                        >
                             {q.text}
                         </div>
                     </div>
@@ -451,11 +508,11 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 22,
                     color: COLORS.textSubtle,
                     marginTop: 30,
                     fontStyle: "italic",
-                    display: "flex",
                 }}
             >
                 Real output from the AI tab.
@@ -486,6 +543,7 @@ const SLIDES = [
 
             <div
                 style={{
+                    display: "flex",
                     fontSize: 110,
                     fontWeight: 800,
                     lineHeight: 1,
@@ -500,7 +558,6 @@ const SLIDES = [
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: 18,
                     marginBottom: 50,
                 }}
             >
@@ -510,7 +567,7 @@ const SLIDES = [
                         position calc, 25 trades, prop firm presets
                     </span>
                 </div>
-                <div style={{ fontSize: 34, fontWeight: 600, display: "flex" }}>
+                <div style={{ fontSize: 34, fontWeight: 600, display: "flex", marginTop: 18 }}>
                     <span style={{ color: COLORS.accent, marginRight: 14 }}>Pro:</span>
                     <span style={{ color: COLORS.text }}>
                         $19/mo, 7-day trial, AI insights, unlimited
@@ -524,7 +581,10 @@ const SLIDES = [
                     color: "#03150f",
                     fontSize: 38,
                     fontWeight: 800,
-                    padding: "26px 48px",
+                    paddingTop: 26,
+                    paddingBottom: 26,
+                    paddingLeft: 48,
+                    paddingRight: 48,
                     borderRadius: 18,
                     display: "flex",
                 }}
