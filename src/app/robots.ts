@@ -23,6 +23,7 @@ export default function robots(): MetadataRoute.Robots {
                 "/settings",
                 "/forgot-password",
                 "/reset-password",
+                "/marketing/",  // Internal-use carousel slide generator
             ],
         },
         sitemap: `${SITE_URL}/sitemap.xml`,
